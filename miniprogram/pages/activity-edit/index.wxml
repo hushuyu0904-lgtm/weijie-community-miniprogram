@@ -1,0 +1,23 @@
+<view class="page">
+  <view class="title">活动编辑</view>
+  <view wx:if="{{status === 'loading'}}" class="state">正在验证权限…</view>
+  <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="loadEditor">重试</button></view>
+  <view wx:else class="card">
+    <view class="notice">{{activityStatus === 'published' ? '已发布 · 本阶段只读' : '草稿 · 完整填写并保存后可发布'}}。所有时间使用北京时间。</view>
+    <label for="title" class="label">活动标题（必填，最多 120 字）</label><input id="title" value="{{form.title}}" data-field="title" bindinput="inputField" maxlength="120" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="description" class="label">活动说明（必填，最多 5000 字）</label><textarea id="description" value="{{form.description}}" data-field="description" bindinput="inputField" maxlength="5000" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="location" class="label">地点（必填）</label><input id="location" value="{{form.location}}" data-field="location" bindinput="inputField" maxlength="200" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="price" class="label">费用（元，最多两位小数；本阶段不收款）</label><input id="price" type="digit" value="{{form.priceYuan}}" data-field="priceYuan" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="capacity" class="label">人数上限（正整数）</label><input id="capacity" type="number" value="{{form.capacity}}" data-field="capacity" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="start" class="label">开始时间（YYYY-MM-DD HH:mm）</label><input id="start" placeholder="例如 2026-12-20 14:00" value="{{form.startAt}}" data-field="startAt" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="end" class="label">结束时间（YYYY-MM-DD HH:mm）</label><input id="end" placeholder="例如 2026-12-20 16:00" value="{{form.endAt}}" data-field="endAt" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="deadline" class="label">报名截止（不得晚于开始）</label><input id="deadline" placeholder="例如 2026-12-19 18:00" value="{{form.deadlineAt}}" data-field="deadlineAt" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="refund" class="label">退款规则（必填；未确定可写“待确认”，本阶段不收款）</label><textarea id="refund" value="{{form.refundPolicy}}" data-field="refundPolicy" bindinput="inputField" maxlength="2000" disabled="{{busy || activityStatus === 'published'}}" />
+    <view wx:if="{{error}}" class="notice">{{error}}</view><view wx:if="{{message}}" class="notice">{{message}}</view>
+    <block wx:if="{{activityStatus === 'draft'}}">
+      <button class="secondary" disabled="{{busy}}" loading="{{busy}}" bindtap="saveDraft">保存草稿</button>
+      <button class="primary" disabled="{{busy || dirty || !version}}" bindtap="publish">发布活动</button>
+      <view wx:if="{{dirty || !version}}" class="muted">请先保存当前内容，再发布。</view>
+    </block>
+  </view>
+</view>

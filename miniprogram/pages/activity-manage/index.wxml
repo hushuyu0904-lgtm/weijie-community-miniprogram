@@ -1,0 +1,17 @@
+<view class="page">
+  <view class="title">活动管理</view>
+  <view class="notice">仅管理员可创建和发布。报名、退款和取消活动本阶段尚未开放。</view>
+  <view wx:if="{{status === 'loading'}}" class="state">正在验证权限并加载…</view>
+  <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="loadActivities">重试</button></view>
+  <block wx:else>
+    <button class="primary" bindtap="openEditor">新建活动</button>
+    <view wx:if="{{!items.length}}" class="state">暂无活动</view>
+    <view wx:for="{{items}}" wx:key="id" class="card">
+      <view class="subtitle">{{item.title}}</view>
+      <view class="muted">{{item.status === 'draft' ? '草稿 · 成员不可见' : '已发布 · 已获准成员可见'}}</view>
+      <button class="secondary" data-id="{{item.id}}" bindtap="openEditor">{{item.status === 'draft' ? '编辑活动' : '查看活动'}}</button>
+    </view>
+    <view wx:if="{{error}}" class="state">{{error}}</view>
+    <button wx:if="{{hasMore}}" class="secondary" loading="{{loadingMore}}" disabled="{{loadingMore}}" bindtap="loadMore">{{error ? '重试加载更多' : '加载更多'}}</button>
+  </block>
+</view>

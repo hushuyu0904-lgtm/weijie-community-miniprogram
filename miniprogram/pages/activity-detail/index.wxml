@@ -1,0 +1,22 @@
+<view class="page">
+  <button class="secondary back" bindtap="goBack">返回活动列表</button>
+  <view class="notice">{{sourceLabel}}</view>
+  <view wx:if="{{status === 'loading'}}" class="state">加载中…</view>
+  <view wx:elif="{{status === 'error'}}" class="state">
+    <view>{{error}}</view>
+    <button class="primary" bindtap="loadActivity">重试</button>
+  </view>
+  <view wx:elif="{{status === 'missing'}}" class="state">活动不存在或链接无效，请返回活动列表。</view>
+  <view wx:else class="card">
+    <view class="muted">{{activity.isDemo ? '示例活动' : '已发布活动'}}</view>
+    <view class="title">{{activity.title}}</view>
+    <view class="field"><text class="label">时间</text>{{activity.timeText}}</view>
+    <view class="field"><text class="label">地点</text>{{activity.location}}</view>
+    <view class="field"><text class="label">费用</text><text class="price">{{activity.priceText}}</text></view>
+    <view class="field"><text class="label">名额</text><text wx:if="{{activity.isDemo}}">剩余 {{activity.remaining}} / {{activity.capacity}} 个（示例）</text><text wx:else>人数上限 {{activity.capacity}} 人 · 报名尚未开放</text></view>
+    <view class="field"><text class="label">报名截止</text>{{activity.deadlineText}}</view>
+    <view class="field"><text class="label">活动说明</text><view class="body">{{activity.description}}</view></view>
+    <view class="field"><text class="label">退款规则</text>{{activity.refundPolicy}}</view>
+    <view class="closed">报名功能尚未开放</view>
+  </view>
+</view>

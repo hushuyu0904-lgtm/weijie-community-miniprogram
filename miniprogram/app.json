@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/activities/index",
+    "pages/activity-detail/index",
+    "pages/jobs/index",
+    "pages/community/index",
+    "pages/mine/index",
+    "pages/activity-manage/index",
+    "pages/activity-edit/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "未界",
+    "navigationBarBackgroundColor": "#faf8f3",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#faf8f3"
+  },
+  "tabBar": {
+    "color": "#716978",
+    "selectedColor": "#7046ac",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/activities/index",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/jobs/index",
+        "text": "招聘"
+      },
+      {
+        "pagePath": "pages/community/index",
+        "text": "交流"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

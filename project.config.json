@@ -1,0 +1,14 @@
+{
+  "description": "未界社群小程序：活动发布与成员浏览（云环境待配置）",
+  "projectname": "weijie-community",
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "miniprogram/",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": true
+  },
+  "cloudfunctionRoot": "cloudfunctions/"
+}
