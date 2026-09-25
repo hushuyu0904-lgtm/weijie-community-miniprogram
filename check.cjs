@@ -36,7 +36,7 @@ async function main() {
     assert.equal(project.miniprogramRoot, 'miniprogram/');
     assert.equal(project.compileType, 'miniprogram');
     const app = json(path.join(mp, 'app.json'));
-    assert.deepEqual(app.tabBar.list.map(tab => tab.text), ['活动', '招聘', '交流', '我的']);
+    assert.deepEqual(app.tabBar.list.map(tab => tab.text), ['活动', '机会', '连接', '我的']);
     assert.equal(new Set(app.pages).size, app.pages.length);
     for (const tab of app.tabBar.list) assert(app.pages.includes(tab.pagePath));
     for (const route of app.pages) {
@@ -71,6 +71,20 @@ async function main() {
     }
     items[0].title = 'changed';
     assert.notEqual((await service.listActivities())[0].title, 'changed');
+  });
+  await check('display adapter labels free activities without masking paid data', async () => {
+    for (const mode of ['demo', 'cloud']) {
+      const apiModule = { exports: {} };
+      const rows = [0, 4900].map((priceFen, i) => ({ id: 'a-example-' + i, priceFen, priceText: '¥49.00（示例）', startAt: 1, endAt: 2, deadlineAt: 1 }));
+      vm.runInNewContext(read(path.join(mp, 'services/activities.js')), {
+        module: apiModule,
+        require: name => name === '../config' ? { mode } : name === './cloud' ? { call: async () => rows } : { listActivities: async () => rows }
+      });
+      const result = await apiModule.exports.listActivities();
+      assert.equal(result[0].priceText, '免费');
+      assert.match(result[1].priceText, /49\.00/);
+      assert.equal(result[0].isDemo, mode === 'demo');
+    }
   });
   await check('manual demo empty/error scenarios actually work', async () => {
     const context = vm.createContext({ module: { exports: {} }, require: () => require('./miniprogram/data/demo-activities') });

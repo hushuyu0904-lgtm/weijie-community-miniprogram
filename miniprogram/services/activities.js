@@ -9,10 +9,10 @@ function dateText(timestamp) {
 }
 
 function forDisplay(activity) {
-  if (isDemo) return Object.assign({}, activity, { isDemo: true });
+  if (isDemo) return Object.assign({}, activity, { isDemo: true, priceText: activity.priceFen === 0 ? '免费' : activity.priceText });
   return Object.assign({}, activity, {
     isDemo: false,
-    priceText: '¥' + (activity.priceFen / 100).toFixed(2),
+    priceText: activity.priceFen === 0 ? '免费' : '¥' + (activity.priceFen / 100).toFixed(2),
     timeText: dateText(activity.startAt) + ' 至 ' + dateText(activity.endAt) + '（北京时间）',
     deadlineText: dateText(activity.deadlineAt) + '（北京时间）'
   });

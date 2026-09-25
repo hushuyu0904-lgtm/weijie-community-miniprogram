@@ -1,4 +1,4 @@
 <view class="page">
-  <view class="title">交流</view>
-  <view class="card state"><view class="subtitle">尚未开放</view><view class="muted">小程序发帖评论＋微信群实时聊天</view><view class="muted">发帖、评论和入群说明将在后续阶段接入。</view></view>
+  <view class="title">连接申请</view>
+  <view class="card state"><view class="subtitle">尚未开放</view><view class="muted">申请与相似背景的前辈交流，由未界审核与撮合，双方确认后安排时间。</view></view>
 </view>

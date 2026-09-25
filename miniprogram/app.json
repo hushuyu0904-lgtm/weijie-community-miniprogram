@@ -26,11 +26,11 @@
       },
       {
         "pagePath": "pages/jobs/index",
-        "text": "招聘"
+        "text": "机会"
       },
       {
         "pagePath": "pages/community/index",
-        "text": "交流"
+        "text": "连接"
       },
       {
         "pagePath": "pages/mine/index",

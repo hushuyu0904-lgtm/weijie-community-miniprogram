@@ -1,0 +1,5 @@
+.detail-page { padding-bottom: calc(200rpx + env(safe-area-inset-bottom)); }
+.detail-heading .title { margin-top: 16rpx; }
+.detail-heading .field { border-top: 1rpx solid #f0ebf3; padding-top: 16rpx; }
+.back { text-align: left; background: transparent; padding-left: 0; }
+.registration-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; background: #faf8f3; border-top: 1rpx solid #e8e1ed; padding: 24rpx 32rpx; padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); }

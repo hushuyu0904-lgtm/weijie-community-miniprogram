@@ -1,8 +1,8 @@
 <view class="page">
-  <view class="brand">未界</view>
+  <view class="brand">未界 · 活动</view>
   <view class="muted">医学背景 · 更多可能</view>
   <view class="notice">{{sourceLabel}}</view>
-  <view class="title">活动</view>
+  <view class="section-heading"><view class="title">一起探索更多可能</view><view class="muted">从一次交流开始</view></view>
   <view wx:if="{{status === 'loading'}}" class="state">加载中…</view>
   <view wx:elif="{{status === 'empty'}}" class="state">
     <view>暂无活动</view>
@@ -14,16 +14,16 @@
     <button class="primary" bindtap="loadActivities">重试</button>
   </view>
   <block wx:else>
-    <view wx:for="{{items}}" wx:key="id" class="card">
-      <view class="muted">{{item.isDemo ? '示例活动 · ' : ''}}报名尚未开放</view>
+    <view wx:for="{{items}}" wx:key="id" class="card activity-card">
+      <view class="activity-label">{{item.isDemo ? '示例活动' : '未界活动'}}</view>
       <view class="subtitle">{{item.title}}</view>
-      <view>{{item.timeText}}</view>
-      <view class="muted">{{item.location}}</view>
-      <view class="price">{{item.priceText}}</view>
-      <view wx:if="{{item.isDemo}}">剩余 {{item.remaining}} / {{item.capacity}} 个名额（示例）</view>
-      <view wx:else>人数上限 {{item.capacity}} 人 · 报名尚未开放</view>
-      <view class="muted">{{item.deadlineText}}</view>
-      <button class="primary" data-id="{{item.id}}" bindtap="openActivity">查看活动</button>
+      <view class="activity-summary muted">{{item.description}}</view>
+      <view class="activity-meta"><text class="label">时间</text>{{item.timeText}}</view>
+      <view class="activity-meta"><text class="label">地点</text>{{item.location}}</view>
+      <view class="activity-footer">
+        <view><view class="price">{{item.priceText}}</view><view class="label">报名尚未开放</view></view>
+        <button class="secondary detail-link" data-id="{{item.id}}" bindtap="openActivity" aria-label="查看活动：{{item.title}}">查看详情 →</button>
+      </view>
     </view>
     <view wx:if="{{moreError}}" class="state">{{moreError}}</view>
     <button wx:if="{{hasMore}}" class="secondary" loading="{{loadingMore}}" disabled="{{loadingMore}}" bindtap="loadMore">{{moreError ? '重试加载更多' : '加载更多'}}</button>
