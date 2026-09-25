@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>未界 · 前端验收</title>
+<style>
+/* PAGE_STYLES */
+*{box-sizing:border-box}body{margin:0;background:#eeeaf0;font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;color:#30253e}button,select{font:inherit}button{border:0;cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #7046ac;outline-offset:3px}
+.workspace{display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:32px 20px}.guide{max-width:300px;position:sticky;top:32px;line-height:1.8}.guide h1{font-size:24px}.guide p,.guide label{font-size:14px}.guide select{width:100%;padding:12px;border:1px solid #bcb2c5;border-radius:10px;background:white}.guide small{display:block;margin-top:20px;color:#716978}
+.phone{width:390px;max-width:100%;height:820px;max-height:calc(100dvh - 64px);position:relative;border:1px solid #d5cddd;border-radius:28px;overflow:hidden;box-shadow:0 16px 60px #30253e14;display:flex;flex-direction:column}.topbar{text-align:center;padding:12px;background:#faf8f3;border-bottom:1px solid #e8e1ed;font-weight:600;flex-shrink:0}.screen{overflow-y:auto;flex:1;min-height:0}.tabs{display:flex;background:white;border-top:1px solid #e8e1ed;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}.tabs button{flex:1;margin:0;padding:16px 0;border-radius:0;background:white;color:#716978;min-height:56px;font-size:14px}.tabs button.active{color:#7046ac;font-weight:700}.registration-bar{position:absolute}.body{white-space:pre-wrap}.page:not(.detail-page){padding-bottom:28px}.guide .tip{background:white;padding:14px;border-radius:12px}
+@media(max-width:760px){.workspace{display:block;padding:12px}.guide{position:static;max-width:440px;margin:0 auto 16px}.guide h1{margin:0}.guide ol,.guide small{display:none}.phone{margin:auto;height:760px;max-height:none;width:390px}.guide p{margin:8px 0}}
+</style>
+<div class="workspace">
+ <aside class="guide">
+  <h1>未界 · 前端验收</h1>
+  <p>浏览器交互样本 · 全部为本地演示<br>用于确认页面布局，不代表微信或后端验收通过。</p>
+  <label for="scenario">验收场景（仅控制演示）</label>
+  <select id="scenario">
+   <option value="normal">正常活动列表</option><option value="loading">加载中</option><option value="empty">空列表</option><option value="error">列表加载失败</option><option value="detail-error">详情加载失败</option><option value="missing">无效活动链接</option><option value="forbidden">无浏览权限</option>
+  </select>
+  <ol><li>分别打开两张活动卡片。</li><li>滚动详情，检查底部是否遮挡。</li><li>返回并切换四个导航。</li><li>切换空数据和失败场景。</li></ol>
+  <p class="tip">“重试”仅演示恢复到正常数据，不发起真实请求。报名、登录、管理员权限均未模拟成功。</p>
+  <small>配色、字号与卡片样式来自当前小程序文件。浏览器和微信的字体、滚动及安全区域可能不同。</small>
+ </aside>
+ <section class="phone" aria-label="小程序页面预览">
+  <header class="topbar" id="title">未界</header>
+  <main class="screen" id="screen"></main>
+  <nav class="tabs" aria-label="底部导航" id="tabs"></nav>
+ </section>
+</div>
+<script>
+const activities = /* DEMO_DATA */[];
+const screen = document.getElementById('screen');
+const tabs = document.getElementById('tabs');
+const scenario = document.getElementById('scenario');
+const escapeText = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const notice = '<div class="notice">本地演示数据 · 未连接真实后端</div>';
+const button = (text, action, id='') => `<button class="secondary" data-action="${action}" data-id="${escapeText(id)}">${text}</button>`;
+const state = (text, retry=false) => `<div class="state" role="status">${text}${retry ? button('重试','retry') : ''}</div>`;
+let current = '活动';
+function render() {
+ let route, id;
+ try { [route,id] = decodeURIComponent(location.hash.slice(1)).split('/'); }
+ catch { route='detail'; id='unknown'; }
+ const detail = route === 'detail';
+ current = ['机会','连接','我的'].includes(route) ? route : '活动';
+ document.getElementById('title').textContent = detail ? '活动详情' : current === '活动' ? '未界' : current;
+ tabs.hidden = detail; tabs.style.display = detail ? 'none' : 'flex';
+ tabs.innerHTML = ['活动','机会','连接','我的'].map(t => `<button data-action="tab" data-id="${t}" class="${t===current?'active':''}" ${t===current?'aria-current="page"':''}>${t}</button>`).join('');
+ let html = '';
+ if(detail){
+  const a = activities.find(a=>a.id===id);
+  html = button('返回活动列表','back') + notice;
+  if(!a) html += state('活动不存在或链接无效，请返回活动列表。');
+  else if(scenario.value==='detail-error') html += state('演示加载失败',true);
+  else html += `<div class="card detail-heading"><div class="muted">示例活动</div><div class="title">${escapeText(a.title)}</div><div class="field"><span class="label">时间</span>${escapeText(a.timeText)}</div><div class="field"><span class="label">地点</span>${escapeText(a.location)}</div><div class="field"><span class="label">费用</span><span class="price">免费</span></div></div><div class="card"><div class="subtitle">活动介绍</div><div class="body">${escapeText(a.description)}</div></div><div class="card"><div class="subtitle">参与说明</div><div class="field"><span class="label">人数上限</span>${a.capacity} 人（示例）</div><div class="field"><span class="label">报名截止</span>${escapeText(a.deadlineText)}</div><div class="muted">仅限本人报名一个名额。</div></div><div class="registration-bar"><div class="closed">报名功能尚未开放</div></div>`;
+ } else if(current==='活动') {
+  html = '<div class="brand">未界 · 活动</div><div class="muted">医学背景 · 更多可能</div>'+notice+'<div class="section-heading"><div class="title">一起探索更多可能</div><div class="muted">从一次交流开始</div></div>';
+  if(scenario.value==='loading') html+=state('加载中…');
+  else if(scenario.value==='empty') html+=state('暂无活动')+button('重新加载','retry');
+  else if(scenario.value==='error') html+=state('演示加载失败<br><span class="muted">身份与成员资格可在“我的”查看。</span>',true);
+  else if(scenario.value==='forbidden') html+=state('无浏览权限，请联系运营者核实成员资格。<br><span class="muted">此处仅演示拒绝访问的页面。</span>');
+  else html+=activities.map(a=>`<div class="card activity-card"><div class="activity-label">示例活动</div><div class="subtitle">${escapeText(a.title)}</div><div class="activity-summary muted">${escapeText(a.description)}</div><div class="activity-meta"><span class="label">时间</span>${escapeText(a.timeText)}</div><div class="activity-meta"><span class="label">地点</span>${escapeText(a.location)}</div><div class="activity-footer"><div><div class="price">免费</div><div class="label">报名尚未开放</div></div><button class="secondary detail-link" data-action="detail" data-id="${a.id}" aria-label="查看活动：${escapeText(a.title)}">查看详情 →</button></div></div>`).join('');
+ } else if(current==='我的') html='<div class="title">我的</div>'+notice+'<div class="card state">此预览不连接微信身份服务，不提供模拟管理员。</div><div class="closed">我的报名、退款与其他管理功能尚未开放</div>';
+ else html=`<div class="title">${current==='机会'?'机会与资源':'连接申请'}</div><div class="card state"><div class="subtitle">尚未开放</div><div class="muted">${current==='机会'?'首版由运营方发布审核后的岗位、实习、行业活动与职业资料。':'申请与相似背景的前辈交流，由未界审核与撮合，双方确认后安排时间。'}</div></div>`;
+ screen.innerHTML=`<div class="page ${detail?'detail-page':''}">${html}</div>`;
+ screen.scrollTop=0;
+}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button[data-action]'); if(!b)return;
+ const action=b.dataset.action;
+ if(action==='detail')location.hash='detail/'+b.dataset.id;
+ if(action==='back')location.hash='活动';
+ if(action==='tab')location.hash=b.dataset.id;
+ if(action==='retry'){scenario.value='normal';render();}
+});
+scenario.addEventListener('change',()=>{
+ const dest=scenario.value==='missing'?'detail/unknown':scenario.value==='detail-error'?'detail/'+activities[0].id:'活动';
+ location.hash=dest;render();
+});
+window.addEventListener('hashchange',render);render();
+</script>
+</html>
