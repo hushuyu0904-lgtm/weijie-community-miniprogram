@@ -36,9 +36,16 @@ async function main() {
     assert.equal(project.miniprogramRoot, 'miniprogram/');
     assert.equal(project.compileType, 'miniprogram');
     const app = json(path.join(mp, 'app.json'));
-    assert.deepEqual(app.tabBar.list.map(tab => tab.text), ['活动', '机会', '连接', '我的']);
+    assert.deepEqual(app.tabBar.list.map(tab => tab.text), ['活动', '资源', '连接', '我的']);
     assert.equal(new Set(app.pages).size, app.pages.length);
-    for (const tab of app.tabBar.list) assert(app.pages.includes(tab.pagePath));
+    for (const tab of app.tabBar.list) {
+      assert(app.pages.includes(tab.pagePath));
+      for (const key of ['iconPath', 'selectedIconPath']) {
+        const icon = fs.readFileSync(path.join(mp, tab[key]));
+        assert.equal(icon.subarray(1, 4).toString(), 'PNG');
+        assert(icon.length < 40000);
+      }
+    }
     for (const route of app.pages) {
       for (const ext of ['js', 'json', 'wxml']) assert(fs.existsSync(path.join(mp, route + '.' + ext)));
       const name = route.split('/')[1];
@@ -116,6 +123,20 @@ async function main() {
     api.listActivities = service.listActivities;
     await p.loadActivities();
     assert.equal(p.data.status, 'ready');
+  });
+  await check('categories filter demos only and do not hide unclassified cloud records', () => {
+    const { instance: p, navigation } = page('activities');
+    p.data.items = [{ id: 'a-example-1', isDemo: false }];
+    p.selectCategory({ currentTarget: { dataset: { id: 'coffee' } } });
+    assert.equal(p.data.category, 'all');
+    assert.equal(navigation[0].method, 'showToast');
+    p.data.items = [{ id: 'demo', isDemo: true }];
+    p.selectCategory({ currentTarget: { dataset: { id: 'lecture' } } });
+    assert.equal(p.data.category, 'lecture');
+    p.selectCategory({ currentTarget: { dataset: { id: 'invalid' } } });
+    assert.equal(p.data.category, 'lecture');
+    p.selectCategory({ currentTarget: { dataset: { id: 'all' } } });
+    assert.equal(p.data.category, 'all');
   });
   await check('list navigation opens matching detail and reports navigation failure', async () => {
     const { instance: p, navigation } = page('activities');

@@ -1,7 +1,15 @@
 const activities = require('../../services/activities');
 
 Page({
-  data: { sourceLabel: activities.sourceLabel, status: 'loading', items: [], error: '', hasMore: false, loadingMore: false, moreError: '' },
+  data: { sourceLabel: activities.sourceLabel, status: 'loading', items: [], error: '', hasMore: false, loadingMore: false, moreError: '', category: 'all', categories: [{id:'coffee',label:'线下 Coffee Chat'},{id:'outing',label:'出去玩'},{id:'lecture',label:'线上讲座'},{id:'chat',label:'线上聊天室'}] },
+  selectCategory(event) {
+    const category = event.currentTarget.dataset.id;
+    if (category !== 'all' && !this.data.categories.some(item => item.id === category)) return;
+    if (category !== 'all' && !this.data.items.some(item => item.isDemo)) {
+      wx.showToast({ title: '活动分类待后端接入', icon: 'none' }); return;
+    }
+    this.setData({ category });
+  },
   onLoad() {
     this._active = true;
     this._firstShow = true;
@@ -20,7 +28,7 @@ Page({
   onUnload() { this._active = false; },
   async loadActivities() {
     const request = this._request = (this._request || 0) + 1;
-    this.setData({ status: 'loading', items: [], error: '', moreError: '', loadingMore: false, hasMore: false });
+    this.setData({ status: 'loading', items: [], error: '', moreError: '', loadingMore: false, hasMore: false, category: 'all' });
     try {
       const items = await activities.listActivities();
       if (this._active && request === this._request) {

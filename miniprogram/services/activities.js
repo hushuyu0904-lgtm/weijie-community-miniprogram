@@ -9,9 +9,9 @@ function dateText(timestamp) {
 }
 
 function forDisplay(activity) {
-  if (isDemo) return Object.assign({}, activity, { isDemo: true, priceText: activity.priceFen === 0 ? '免费' : activity.priceText });
+  if (isDemo) return Object.assign({}, activity, { isDemo: true, dateLabel: '待定', category: activity.id === 'demo-medical-ai' ? 'lecture' : 'coffee', cover: activity.id === 'demo-medical-ai' ? 'ai' : 'scene', priceText: activity.priceFen === 0 ? '免费' : activity.priceText });
   return Object.assign({}, activity, {
-    isDemo: false,
+    isDemo: false, dateLabel: dateText(activity.startAt).slice(5,10).replace('-', '/'), cover: 'scene',
     priceText: activity.priceFen === 0 ? '免费' : '¥' + (activity.priceFen / 100).toFixed(2),
     timeText: dateText(activity.startAt) + ' 至 ' + dateText(activity.endAt) + '（北京时间）',
     deadlineText: dateText(activity.deadlineAt) + '（北京时间）'

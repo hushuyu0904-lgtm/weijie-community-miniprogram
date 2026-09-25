@@ -10,31 +10,39 @@
   ],
   "window": {
     "navigationBarTitleText": "未界",
-    "navigationBarBackgroundColor": "#faf8f3",
+    "navigationBarBackgroundColor": "#b5eadc",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#faf8f3"
+    "backgroundColor": "#ffffff"
   },
   "tabBar": {
     "color": "#716978",
-    "selectedColor": "#7046ac",
+    "selectedColor": "#187552",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/activities/index",
-        "text": "活动"
+        "text": "活动",
+        "iconPath": "assets/calendar.png",
+        "selectedIconPath": "assets/calendar-selected.png"
       },
       {
         "pagePath": "pages/jobs/index",
-        "text": "机会"
+        "text": "资源",
+        "iconPath": "assets/book.png",
+        "selectedIconPath": "assets/book-selected.png"
       },
       {
         "pagePath": "pages/community/index",
-        "text": "连接"
+        "text": "连接",
+        "iconPath": "assets/chat.png",
+        "selectedIconPath": "assets/chat-selected.png"
       },
       {
         "pagePath": "pages/mine/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "assets/person.png",
+        "selectedIconPath": "assets/person-selected.png"
       }
     ]
   },

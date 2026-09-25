@@ -1,4 +1,1 @@
-<view class="page">
-  <view class="title">机会与资源</view>
-  <view class="card state"><view class="subtitle">尚未开放</view><view class="muted">首版由运营方发布审核后的岗位、实习、行业活动与职业资料。</view></view>
-</view>
+<view class="page"><view class="title">资源</view><view class="card state"><view class="subtitle">尚未开放</view><view class="muted">机会 · 知识库 · 最新资讯</view></view></view>

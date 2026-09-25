@@ -3,3 +3,5 @@
 .detail-heading .field { border-top: 1rpx solid #f0ebf3; padding-top: 16rpx; }
 .back { text-align: left; background: transparent; padding-left: 0; }
 .registration-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; background: #faf8f3; border-top: 1rpx solid #e8e1ed; padding: 24rpx 32rpx; padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); }
+
+page{background:#f4faf7;color:#162f32}.registration-bar{background:#f4faf7}.primary{background:#187552}.secondary,.notice{background:#e8f6ef;color:#267257}.price{color:#187552}
