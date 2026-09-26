@@ -1,7 +1,7 @@
 const activities = require('../../services/activities');
 
 Page({
-  data: { heroFailed: false, llmFailed: false, failedCovers: {}, sourceLabel: activities.sourceLabel, status: 'loading', items: [], error: '', hasMore: false, loadingMore: false, moreError: '', category: 'all', categories: [{id:'coffee',label:'线下 Coffee Chat'},{id:'outing',label:'出去玩'},{id:'lecture',label:'线上讲座'},{id:'chat',label:'线上聊天室'}] },
+  data: { heroFailed: false, llmFailed: false, failedCovers: {}, sourceLabel: activities.sourceLabel, status: 'loading', items: [], error: '', hasMore: false, loadingMore: false, moreError: '', category: 'all', categories: [{id:'coffee',label:'线下 Coffee Chat',shortLabel:'CC'},{id:'outing',label:'出去玩',shortLabel:'出去玩'},{id:'lecture',label:'线上讲座',shortLabel:'讲座'},{id:'chat',label:'线上聊天室',shortLabel:'聊天室'}] },
   onHeroError() { this.setData({ heroFailed: true }); },
   onLlmError() { this.setData({ llmFailed: true }); },
   onCoverError(event) {

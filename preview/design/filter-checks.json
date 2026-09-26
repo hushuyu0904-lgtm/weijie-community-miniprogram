@@ -1,0 +1,82 @@
+[
+  {
+    "name": "activities",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-news",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-knowledge",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-recap",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-news",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-knowledge",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-recap",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  }
+]
