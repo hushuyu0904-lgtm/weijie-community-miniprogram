@@ -213,7 +213,8 @@ async function main() {
       assert.match(markup, /尚未开放/);
       assert(!/<button|bindtap=/.test(markup));
       const { instance, definition, navigation } = page(name);
-      assert.deepEqual(Object.keys(definition), ['onShow']);
+      assert.deepEqual(Object.keys(definition).sort(), name === 'jobs' ? ['data', 'onCoverError', 'onShow'] : ['onShow']);
+      if (name === 'jobs') { instance.onCoverError(); assert.equal(instance.data.coverFailed, true); }
       const updates=[];instance.getTabBar=()=>({setData: value=>updates.push(value)});
       instance.onShow();
       assert.equal(updates[0].selected, name === 'jobs' ? 1 : 2);

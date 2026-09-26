@@ -48,11 +48,12 @@ function render(nodes,data){let output='',chain=false;
 const categories=[{id:'coffee',label:'线下 Coffee Chat'},{id:'outing',label:'出去玩'},{id:'lecture',label:'线上讲座'},{id:'chat',label:'线上聊天室'}];
 const items=require('../../miniprogram/data/demo-activities').map(a=>({...a,isDemo:true,dateLabel:'待定',category:a.id==='demo-medical-ai'?'lecture':'coffee',priceText:'免费'}));
 const tabs=JSON.parse(read('app.json')).tabBar.list.map(t=>({...t,pagePath:'/'+t.pagePath,icon:t.iconPath.split('/').pop().replace('.png','')}));
-const common={status:'ready',sourceLabel:'本地演示数据 · 未连接真实后端',category:'all',categories,items,heroFailed:false,failedCovers:{},hasMore:false,moreError:'',loadingMore:false,error:'',activity:items[0],coverFailed:false};
-const pages=[['activities','activities',common,0],['jobs','jobs',{},1],['community','community',{},2],['mine','mine',{status:'error',error:'尚未配置云环境，无法验证身份',identity:null},3],['detail-ai','activity-detail',common],['detail-coffee','activity-detail',{...common,activity:items[1]}],['activity-manage','activity-manage',{status:'error',error:'未完成身份与权限验证'}],['activity-edit','activity-edit',{status:'error',error:'未完成身份与权限验证'}]];
+const common={status:'ready',sourceLabel:'本地演示数据 · 未连接真实后端',category:'all',categories,items,heroFailed:false,llmFailed:false,failedCovers:{},hasMore:false,moreError:'',loadingMore:false,error:'',activity:items[0],coverFailed:false};
+const pages=[['activities','activities',common,0],['jobs','jobs',{coverFailed:false},1],['community','community',{},2],['mine','mine',{status:'error',error:'尚未配置云环境，无法验证身份',identity:null},3],['detail-ai','activity-detail',common],['detail-coffee','activity-detail',{...common,activity:items[1]}],['activity-manage','activity-manage',{status:'error',error:'未完成身份与权限验证'}],['activity-edit','activity-edit',{status:'error',error:'未完成身份与权限验证'}]];
 for(const status of ['loading','empty','error'])pages.push(['activities-'+status,'activities',{...common,status,error:'活动加载失败，请重试'},0]);
 pages.push(['activities-long','activities',{...common,items:items.map(i=>({...i,title:'医学背景的职业探索：从临床问题到医疗人工智能产品，与不同领域的朋友一起交流'}))},0]);
-pages.push(['activities-broken','activities',{...common,heroFailed:true,failedCovers:Object.fromEntries(items.map(i=>[i.id,true]))},0]);
+pages.push(['activities-broken','activities',{...common,heroFailed:true,llmFailed:true,failedCovers:Object.fromEntries(items.map(i=>[i.id,true]))},0]);
+pages.push(['jobs-broken','jobs',{coverFailed:true},1],['detail-ai-broken','activity-detail',{...common,coverFailed:true}]);
 pages.push(['detail-missing','activity-detail',{...common,status:'missing'}]);
 for(const [name,page,data,selected] of pages){
  const localStyle='pages/'+page+'/index.wxss';let css=read('app.wxss')+'\n'+(fs.existsSync(path.join(root,localStyle))?read(localStyle):'');if(selected!==undefined)css+='\n'+read('custom-tab-bar/index.wxss');

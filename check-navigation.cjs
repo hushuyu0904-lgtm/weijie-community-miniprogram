@@ -10,4 +10,5 @@ let page;vm.runInNewContext(fs.readFileSync('miniprogram/pages/activities/index.
 const p={data:{items:[{id:'demo-medical-ai'}],failedCovers:{}},setData(v){Object.assign(this.data,v)}};
 page.onCoverError.call(p,{currentTarget:{dataset:{id:'invalid'}}});assert.equal(Object.keys(p.data.failedCovers).length,0);
 page.onCoverError.call(p,{currentTarget:{dataset:{id:'demo-medical-ai'}}});assert.equal(p.data.failedCovers['demo-medical-ai'],true);page.onHeroError.call(p);assert.equal(p.data.heroFailed,true);
+page.onLlmError.call(p);assert.equal(p.data.llmFailed,true);
 console.log('PASS custom navigation selection, invalid targets, failed switches, page restore and cover failure handling. Local component/page substitutes only.');

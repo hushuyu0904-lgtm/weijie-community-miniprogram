@@ -104,6 +104,22 @@
     "navTargets": true
   },
   {
+    "name": "jobs-broken",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-ai-broken",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
     "name": "detail-missing",
     "width": 390,
     "overflow": false,
@@ -209,6 +225,22 @@
   },
   {
     "name": "activities-broken",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs-broken",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-ai-broken",
     "width": 320,
     "overflow": false,
     "broken": 0,
