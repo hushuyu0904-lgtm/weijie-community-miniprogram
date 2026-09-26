@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+let definition;const calls=[];let route='pages/community/index';
+vm.runInNewContext(fs.readFileSync('miniprogram/custom-tab-bar/index.js','utf8'),{Component:d=>definition=d,getCurrentPages:()=>[{route}],wx:{switchTab:p=>calls.push(p),showToast:p=>calls.push(p)}});
+const tab={data:JSON.parse(JSON.stringify(definition.data)),...definition.methods,setData(p){Object.assign(this.data,p)}};
+tab.syncRoute();assert.equal(tab.data.selected,2);
+for(const index of [-1,4,'bad',2])tab.switchTab({currentTarget:{dataset:{index}}});assert.equal(calls.length,0);
+tab.switchTab({currentTarget:{dataset:{index:1}}});assert.equal(calls[0].url,'/pages/jobs/index');assert.equal(tab.data.selected,2);calls[0].fail();assert.equal(tab.data.selected,2);assert.equal(calls[1].title,'页面打开失败，请重试');calls[0].success();assert.equal(tab.data.selected,1);
+route='pages/mine/index';definition.pageLifetimes.show.call(tab);assert.equal(tab.data.selected,3);
+let page;vm.runInNewContext(fs.readFileSync('miniprogram/pages/activities/index.js','utf8'),{Page:p=>page=p,require:()=>({sourceLabel:'test'})});
+const p={data:{items:[{id:'demo-medical-ai'}],failedCovers:{}},setData(v){Object.assign(this.data,v)}};
+page.onCoverError.call(p,{currentTarget:{dataset:{id:'invalid'}}});assert.equal(Object.keys(p.data.failedCovers).length,0);
+page.onCoverError.call(p,{currentTarget:{dataset:{id:'demo-medical-ai'}}});assert.equal(p.data.failedCovers['demo-medical-ai'],true);page.onHeroError.call(p);assert.equal(p.data.heroFailed,true);
+console.log('PASS custom navigation selection, invalid targets, failed switches, page restore and cover failure handling. Local component/page substitutes only.');

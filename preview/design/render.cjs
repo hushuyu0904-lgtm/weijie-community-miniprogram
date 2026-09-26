@@ -1,0 +1,21 @@
+const fs=require('node:fs'),path=require('node:path'),{spawn}=require('node:child_process'),{pathToFileURL}=require('node:url');
+const dir=__dirname,profile=path.resolve(dir,'../../.preview-browser-design'),delay=ms=>new Promise(r=>setTimeout(r,ms));
+const child=spawn('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',['--headless','--disable-gpu','--no-first-run','--remote-debugging-port=9340','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:'ignore'});
+(async()=>{let pages;for(let i=0;i<30;i++){try{pages=await(await fetch('http://127.0.0.1:9340/json')).json();break;}catch{await delay(200)}}if(!pages)throw Error('Browser unavailable');
+ const ws=new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl);await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j});let seq=0;const pending=new Map();ws.onmessage=e=>{const m=JSON.parse(e.data);if(pending.has(m.id)){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(Error(m.error.message)):p.resolve(m.result)}};
+ const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}))});
+ await call('Page.enable');const go=async name=>{await call('Page.navigate',{url:pathToFileURL(path.join(dir,name+'.html')).href});await delay(200)};
+ await call('Emulation.setDeviceMetricsOverride',{width:672,height:168,deviceScaleFactor:1,mobile:false});await call('Emulation.setDefaultBackgroundColorOverride',{color:{r:0,g:0,b:0,a:0}});await go('icons');
+ const names=JSON.parse(fs.readFileSync(path.join(dir,'icon-names.json')));const assets=path.resolve(dir,'../../miniprogram/assets/editorial');
+ for(const [i,name] of names.entries()){const s=await call('Page.captureScreenshot',{format:'png',clip:{x:i%8*84,y:Math.floor(i/8)*84,width:84,height:84,scale:1}});fs.writeFileSync(path.join(assets,name+'.png'),Buffer.from(s.data,'base64'))}
+ await call('Emulation.setDefaultBackgroundColorOverride',{});const report=[];
+ for(const width of [390,320])for(const name of ['activities','jobs','community','mine','detail-ai','detail-coffee','activity-manage','activity-edit','activities-loading','activities-empty','activities-error','activities-long','activities-broken','detail-missing']){
+  await call('Emulation.setDeviceMetricsOverride',{width,height:844,deviceScaleFactor:1,mobile:true});await go(name);
+  const result=await call('Runtime.evaluate',{expression:`JSON.stringify({width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth,broken:[...document.images].filter(i=>!i.complete||!i.naturalWidth).length,unresolved:document.body.innerText.includes('{{'),navTargets:[...document.querySelectorAll('.tab-item')].every(e=>e.getBoundingClientRect().height>=44)})`,returnByValue:true});const value=JSON.parse(result.result.value);report.push({name,...value});if(value.overflow||value.broken||value.unresolved||!value.navTargets)throw Error(name+' '+width+' '+result.result.value);
+  if(['activities','jobs','community','mine','detail-ai','detail-coffee','activities-long','activities-broken'].includes(name)){const s=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(dir,name+'-'+width+'.png'),Buffer.from(s.data,'base64'));}
+  if(['activities','jobs','community','mine'].includes(name)){await call('Runtime.evaluate',{expression:'scrollTo(0,document.body.scrollHeight)'});await delay(30);const s=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(dir,name+'-'+width+'-bottom.png'),Buffer.from(s.data,'base64'));}
+ }
+ fs.writeFileSync(path.join(dir,'checks.json'),JSON.stringify(report,null,2));console.log('PASS '+report.length+' page/width cases: images, overflow, interpolation, navigation targets.');
+ await call('Emulation.setDeviceMetricsOverride',{width:1710,height:1100,deviceScaleFactor:1,mobile:false});await go('index');await delay(200);const overview=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(dir,'overview.png'),Buffer.from(overview.data,'base64'));
+ await call('Browser.close').catch(()=>{});ws.close();
+})().catch(e=>{console.error(e);child.kill();process.exitCode=1});

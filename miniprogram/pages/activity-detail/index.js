@@ -1,7 +1,8 @@
 const activities = require('../../services/activities');
 
 Page({
-  data: { sourceLabel: activities.sourceLabel, status: 'loading', activity: null, error: '' },
+  data: { coverFailed: false, sourceLabel: activities.sourceLabel, status: 'loading', activity: null, error: '' },
+  onCoverError() { this.setData({ coverFailed: true }); },
   onLoad(options) {
     this._active = true;
     this._firstShow = true;

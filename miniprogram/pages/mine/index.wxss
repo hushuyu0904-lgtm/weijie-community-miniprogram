@@ -1,0 +1,1 @@
+.profile-heading{display:flex;align-items:center;justify-content:space-between;gap:20rpx}.profile-icon{width:112rpx;height:112rpx;border-radius:50%;background:#ffffffbd;display:flex;align-items:center;justify-content:center;flex-shrink:0}.profile-icon image{width:66rpx;height:66rpx}.mine-note{margin-top:30rpx}.body{word-break:break-all}

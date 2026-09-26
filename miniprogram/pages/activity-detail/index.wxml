@@ -8,7 +8,7 @@
   </view>
   <view wx:elif="{{status === 'missing'}}" class="state">活动不存在或链接无效，请返回活动列表。</view>
   <block wx:else>
-  <view class="card detail-heading">
+  <view class="detail-cover poster-ai" wx:if="{{activity.isDemo && activity.category === 'lecture'}}"><view class="poster-label">未界 / 职业探索</view><view class="poster-big">医学 × <text>AI</text></view><view class="poster-rule"></view><view class="poster-caption">从临床问题到产品思考</view><view class="poster-end">原创主题海报 · 示例活动</view></view><view class="detail-coffee" wx:elif="{{activity.isDemo}}"><image wx:if="{{!coverFailed}}" src="/assets/editorial/coffee-chat.jpg" mode="aspectFill" binderror="onCoverError"/><text class="photo-note">图库主题配图 · 非活动现场</text></view><view class="card detail-heading">
     <view class="muted">{{activity.isDemo ? '示例活动' : '已发布活动'}}</view>
     <view class="title">{{activity.title}}</view>
     <view class="field"><text class="label">时间</text>{{activity.timeText}}</view>

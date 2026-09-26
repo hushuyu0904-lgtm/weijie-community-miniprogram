@@ -1,0 +1,226 @@
+[
+  {
+    "name": "activities",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "community",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "mine",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-ai",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-coffee",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activity-manage",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activity-edit",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-loading",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-empty",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-error",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-long",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-broken",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-missing",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "jobs",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "community",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "mine",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-ai",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-coffee",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activity-manage",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activity-edit",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-loading",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-empty",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-error",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-long",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "activities-broken",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-missing",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  }
+]

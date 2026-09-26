@@ -212,7 +212,12 @@ async function main() {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
       assert.match(markup, /尚未开放/);
       assert(!/<button|bindtap=/.test(markup));
-      assert.equal(Object.keys(page(name).definition).length, 0);
+      const { instance, definition, navigation } = page(name);
+      assert.deepEqual(Object.keys(definition), ['onShow']);
+      const updates=[];instance.getTabBar=()=>({setData: value=>updates.push(value)});
+      instance.onShow();
+      assert.equal(updates[0].selected, name === 'jobs' ? 1 : 2);
+      assert.equal(navigation.length, 0); // Showing a closed page only updates its tab highlight.
     }
     assert.match(read(path.join(mp, 'pages/activity-detail/index.wxml')), /报名功能尚未开放/);
   });

@@ -10,41 +10,42 @@
   ],
   "window": {
     "navigationBarTitleText": "未界",
-    "navigationBarBackgroundColor": "#b5eadc",
+    "navigationBarBackgroundColor": "#c8f2dc",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#ffffff"
   },
   "tabBar": {
-    "color": "#716978",
-    "selectedColor": "#187552",
+    "color": "#647068",
+    "selectedColor": "#087649",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/activities/index",
         "text": "活动",
-        "iconPath": "assets/calendar.png",
-        "selectedIconPath": "assets/calendar-selected.png"
+        "iconPath": "assets/editorial/calendar.png",
+        "selectedIconPath": "assets/editorial/calendar-selected.png"
       },
       {
         "pagePath": "pages/jobs/index",
         "text": "资源",
-        "iconPath": "assets/book.png",
-        "selectedIconPath": "assets/book-selected.png"
+        "iconPath": "assets/editorial/book.png",
+        "selectedIconPath": "assets/editorial/book-selected.png"
       },
       {
         "pagePath": "pages/community/index",
         "text": "连接",
-        "iconPath": "assets/chat.png",
-        "selectedIconPath": "assets/chat-selected.png"
+        "iconPath": "assets/editorial/chat.png",
+        "selectedIconPath": "assets/editorial/chat-selected.png"
       },
       {
         "pagePath": "pages/mine/index",
         "text": "我的",
-        "iconPath": "assets/person.png",
-        "selectedIconPath": "assets/person-selected.png"
+        "iconPath": "assets/editorial/person.png",
+        "selectedIconPath": "assets/editorial/person-selected.png"
       }
-    ]
+    ],
+    "custom": true
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

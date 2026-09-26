@@ -1,15 +1,1 @@
-<view class="page">
-  <view class="title">我的</view>
-  <view class="notice">身份和权限由服务端验证，不提供模拟管理员。</view>
-  <view wx:if="{{status === 'loading'}}" class="state">正在验证微信身份…</view>
-  <view wx:elif="{{status === 'error'}}" class="card state"><view>{{error}}</view><button class="primary" bindtap="loadIdentity">重试</button></view>
-  <view wx:else class="card">
-    <view class="subtitle">{{identity.role === 'admin' ? '管理员' : identity.canBrowse ? '社群成员' : '尚未获准访问社群'}}</view>
-    <view class="muted">{{identity.canBrowse ? '身份已由云函数确认' : '请将身份编号交给运营者核实，加入后重新验证。'}}</view>
-    <view class="field body"><text class="label">本人身份编号（仅用于成员登记，不是登录凭据）</text>{{identity.memberKey}}</view>
-    <button class="secondary" bindtap="copyIdentity">复制身份编号</button>
-    <button class="secondary" bindtap="loadIdentity">重新验证身份</button>
-    <button wx:if="{{identity.role === 'admin'}}" class="primary" bindtap="openManage">活动管理</button>
-  </view>
-  <view class="closed">我的报名、退款与其他管理功能尚未开放</view>
-</view>
+<view class="tab-page"><view class="masthead"><view class="kicker">未界 / MY SPACE</view><view class="profile-heading"><view><view class="page-heading">我的</view><view class="deck editorial">在未界，留下自己的故事。</view></view><view class="profile-icon"><image src="/assets/editorial/person.png"/></view></view></view><view class="page-body"><view class="section-head"><view class="subtitle">身份与访问</view></view><view class="notice">身份和权限由服务端验证，不提供模拟管理员。</view><view wx:if="{{status === 'loading'}}" class="state">正在验证微信身份…</view><view wx:elif="{{status === 'error'}}" class="card state"><image class="state-icon" src="/assets/editorial/person.png"/><view>{{error}}</view><button class="primary" bindtap="loadIdentity">重试</button></view><view wx:else class="card"><view class="subtitle">{{identity.role === 'admin' ? '管理员' : identity.canBrowse ? '社群成员' : '尚未获准访问社群'}}</view><view class="muted">{{identity.canBrowse ? '身份已由云函数确认' : '请将身份编号交给运营者核实，加入后重新验证。'}}</view><view class="field body"><text class="label">本人身份编号（仅用于成员登记，不是登录凭据）</text>{{identity.memberKey}}</view><button class="secondary" bindtap="copyIdentity">复制身份编号</button><button class="secondary" bindtap="loadIdentity">重新验证身份</button><button wx:if="{{identity.role === 'admin'}}" class="primary" bindtap="openManage">活动管理</button></view><view class="section-head"><view class="subtitle">我的参与</view></view><view class="flat-row"><image class="flat-icon" src="/assets/editorial/calendar.png"/><view class="flat-copy"><view class="flat-title">我的报名</view><view class="small">活动与参与记录</view></view><text class="status-pill">尚未开放</text></view><view class="flat-row"><image class="flat-icon" src="/assets/editorial/chat.png"/><view class="flat-copy"><view class="flat-title">连接申请</view><view class="small">交流申请与安排</view></view><text class="status-pill">尚未开放</text></view><view class="closed mine-note">我的报名、退款与其他管理功能尚未开放</view></view></view>

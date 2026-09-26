@@ -1,7 +1,7 @@
 const cloud = require('../../services/cloud');
 Page({
   data: { status: 'loading', identity: null, error: '' },
-  onShow() { this._active = true; return this.loadIdentity(); },
+  onShow() { if (typeof this.getTabBar === 'function' && this.getTabBar()) this.getTabBar().setData({ selected: 3 }); this._active = true; return this.loadIdentity(); },
   onHide() { this._active = false; this._request++; this.setData({ identity: null }); },
   onUnload() { this._active = false; },
   async loadIdentity() {
