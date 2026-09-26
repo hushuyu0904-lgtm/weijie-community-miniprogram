@@ -207,13 +207,14 @@ async function main() {
       assert.equal(p.data.status, 'loading');
     }
   });
-  await check('closed pages have no simulated actions or identity grant', () => {
+  await check('resource and connection previews preserve unavailable states without identity grant', () => {
     for (const name of ['jobs', 'community']) {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
-      assert.match(markup, /尚未开放/);
-      assert(!/<button|bindtap=/.test(markup));
+      assert.match(markup, /尚未开放|暂未开放/);
+      const script=read(path.join(mp, 'pages', name, 'index.js'));
+      assert(!/wx\.(request|uploadFile|setStorage|cloud)/.test(script));
       const { instance, definition, navigation } = page(name);
-      assert.deepEqual(Object.keys(definition).sort(), name === 'jobs' ? ['data', 'onCoverError', 'onShow'] : ['onShow']);
+      assert(!('role' in instance.data));
       if (name === 'jobs') { instance.onCoverError(); assert.equal(instance.data.coverFailed, true); }
       const updates=[];instance.getTabBar=()=>({setData: value=>updates.push(value)});
       instance.onShow();

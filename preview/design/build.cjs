@@ -28,7 +28,7 @@ function render(nodes,data){let output='',chain=false;
   else chain=false;
   if(a['wx:for']){for(const [index,item] of raw(a['wx:for'],data).entries()){const copy={...n,attrs:{...a}};delete copy.attrs['wx:for'];output+=render([copy],{...data,index,item});}continue;}
   if(n.tag==='block'){output+=render(n.children,data);continue;}
-  let tag={view:'div',text:'span',image:'img'}[n.tag]||n.tag;
+  let tag={view:'div',text:'span',image:'img','scroll-view':'div'}[n.tag]||n.tag;
   const attrs=[];
   for(const [k,v] of Object.entries(a)){
    if(k.startsWith('wx:')||k.startsWith('bind')||k==='mode')continue;
@@ -49,15 +49,19 @@ const categories=[{id:'coffee',label:'线下 Coffee Chat'},{id:'outing',label:'�
 const items=require('../../miniprogram/data/demo-activities').map(a=>({...a,isDemo:true,dateLabel:'待定',category:a.id==='demo-medical-ai'?'lecture':'coffee',priceText:'免费'}));
 const tabs=JSON.parse(read('app.json')).tabBar.list.map(t=>({...t,pagePath:'/'+t.pagePath,icon:t.iconPath.split('/').pop().replace('.png','')}));
 const common={status:'ready',sourceLabel:'本地演示数据 · 未连接真实后端',category:'all',categories,items,heroFailed:false,llmFailed:false,failedCovers:{},hasMore:false,moreError:'',loadingMore:false,error:'',activity:items[0],coverFailed:false};
-const pages=[['activities','activities',common,0],['jobs','jobs',{coverFailed:false},1],['community','community',{},2],['mine','mine',{status:'error',error:'尚未配置云环境，无法验证身份',identity:null},3],['detail-ai','activity-detail',common],['detail-coffee','activity-detail',{...common,activity:items[1]}],['activity-manage','activity-manage',{status:'error',error:'未完成身份与权限验证'}],['activity-edit','activity-edit',{status:'error',error:'未完成身份与权限验证'}]];
+function pageData(name){let data;vm.runInNewContext(read('pages/'+name+'/index.js'),{Page:p=>data=p.data});return data;}
+const jobsData=pageData('jobs'),communityData=pageData('community');
+const pages=[['activities','activities',common,0],['jobs','jobs',jobsData,1],['community','community',communityData,2],['mine','mine',{status:'error',error:'尚未配置云环境，无法验证身份',identity:null},3],['detail-ai','activity-detail',common],['detail-coffee','activity-detail',{...common,activity:items[1]}],['activity-manage','activity-manage',{status:'error',error:'未完成身份与权限验证'}],['activity-edit','activity-edit',{status:'error',error:'未完成身份与权限验证'}]];
+for(const category of ['news','knowledge','recap'])pages.push(['jobs-'+category,'jobs',{...jobsData,category},1]);
+pages.push(['community-form','community',{...communityData,formOpen:true},2]);
 for(const status of ['loading','empty','error'])pages.push(['activities-'+status,'activities',{...common,status,error:'活动加载失败，请重试'},0]);
 pages.push(['activities-long','activities',{...common,items:items.map(i=>({...i,title:'医学背景的职业探索：从临床问题到医疗人工智能产品，与不同领域的朋友一起交流'}))},0]);
 pages.push(['activities-broken','activities',{...common,heroFailed:true,llmFailed:true,failedCovers:Object.fromEntries(items.map(i=>[i.id,true]))},0]);
-pages.push(['jobs-broken','jobs',{coverFailed:true},1],['detail-ai-broken','activity-detail',{...common,coverFailed:true}]);
+pages.push(['jobs-broken','jobs',{...jobsData,category:'knowledge',coverFailed:true},1],['detail-ai-broken','activity-detail',{...common,coverFailed:true}]);
 pages.push(['detail-missing','activity-detail',{...common,status:'missing'}]);
 for(const [name,page,data,selected] of pages){
  const localStyle='pages/'+page+'/index.wxss';let css=read('app.wxss')+'\n'+(fs.existsSync(path.join(root,localStyle))?read(localStyle):'');if(selected!==undefined)css+='\n'+read('custom-tab-bar/index.wxss');
- css=css.replace(/(^|[}\n])page\s*\{/g,'$1body{').replace(/\bimage\b/g,'img').replace(/\btext(?=\s*\{)/g,'span').replace(/([\d.]+)rpx/g,(_,n)=>`calc(${n} * 100vw / 750)`);
+ css=css.replace(/(^|[}\n])page\s*\{/g,'$1body{').replace(/\bimage\b/g,'img').replace(/\btext(?=\s*\{)/g,'span').replace(/([\d.]+)rpx/g,(_,n)=>`calc(${n} * 100vw / 750)`);css+='\n.category-scroll,.resource-scroll{overflow-x:auto}';
  let body=render(parse(read('pages/'+page+'/index.wxml')),data);if(selected!==undefined)body+=render(parse(read('custom-tab-bar/index.wxml')),{selected,tabs});body=body.replace(/[ \t]+$/gm,'');
  fs.writeFileSync(path.join(__dirname,name+'.html'),`<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>未界 / ${name} / 浏览器对照</title><style>*{box-sizing:border-box}body{margin:0}button{border:0}img{object-fit:cover}a{color:inherit;text-decoration:none}a[data-id]{display:block;padding:16px 0;min-height:44px;font-size:12px}.tab-item{border:0}input,textarea{font:inherit}${css}</style>${body}</html>`);
 }
