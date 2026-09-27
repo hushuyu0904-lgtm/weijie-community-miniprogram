@@ -207,12 +207,19 @@ async function main() {
       assert.equal(p.data.status, 'loading');
     }
   });
-  await check('closed resources and connections do not simulate success; activity has a real registration action', () => {
+  await check('resource and connection previews preserve unavailable states without identity grant', () => {
     for (const name of ['jobs', 'community']) {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
-      assert.match(markup, /尚未开放/);
-      assert(!/<button|bindtap=/.test(markup));
-      assert.equal(Object.keys(page(name).definition).length, 0);
+      assert.match(markup, /尚未开放|暂未开放/);
+      const script=read(path.join(mp, 'pages', name, 'index.js'));
+      assert(!/wx\.(request|uploadFile|setStorage|cloud)/.test(script));
+      const { instance, definition, navigation } = page(name);
+      assert(!('role' in instance.data));
+      if (name === 'jobs') { instance.onCoverError(); assert.equal(instance.data.coverFailed, true); }
+      const updates=[];instance.getTabBar=()=>({setData: value=>updates.push(value)});
+      instance.onShow();
+      assert.equal(updates[0].selected, name === 'jobs' ? 1 : 2);
+      assert.equal(navigation.length, 0); // Showing a closed page only updates its tab highlight.
     }
     const detailMarkup = read(path.join(mp, 'pages/activity-detail/index.wxml'));
     assert.match(detailMarkup, /免费报名/);

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "mine-profile",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-free",
+    "width": 390,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "mine-profile",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  },
+  {
+    "name": "detail-free",
+    "width": 320,
+    "overflow": false,
+    "broken": 0,
+    "unresolved": false,
+    "navTargets": true
+  }
+]

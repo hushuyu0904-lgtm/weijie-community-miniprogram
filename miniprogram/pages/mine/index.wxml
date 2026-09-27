@@ -1,5 +1,4 @@
-<view class="page">
-  <view class="title">我的</view>
+<view class="tab-page"><view class="masthead"><view class="kicker">未界 / MY SPACE</view><view class="profile-heading"><view><view class="page-heading">我的</view><view class="deck editorial">在未界，留下自己的故事。</view></view><view class="profile-icon"><image src="/assets/editorial/person.png"/></view></view></view><view class="page-body">
   <view wx:if="{{status === 'loading'}}" class="state">正在验证微信身份…</view>
   <view wx:elif="{{status === 'error'}}" class="card state"><view>{{error}}</view><button class="primary" bindtap="loadIdentity">重试</button></view>
   <block wx:else>
@@ -24,4 +23,5 @@
     <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button></view>
     <view class="closed">账号身份由服务端验证；管理员权限仅由运营方受控授予。</view>
   </block>
+</view>
 </view>
