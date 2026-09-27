@@ -1,0 +1,687 @@
+{
+  "_id": "catalog_1.0.0",
+  "schemaVersion": "1.0.0",
+  "version": "1.0.0",
+  "status": "draft",
+  "concepts": [
+    {
+      "id": "student",
+      "kind": "stage",
+      "label": "医学生或在读",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "student"
+    },
+    {
+      "id": "graduate",
+      "kind": "stage",
+      "label": "毕业后探索中",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "graduate"
+    },
+    {
+      "id": "resident",
+      "kind": "stage",
+      "label": "规培或临床早期",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "resident"
+    },
+    {
+      "id": "clinician",
+      "kind": "stage",
+      "label": "临床或医疗从业者",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "clinician"
+    },
+    {
+      "id": "industry",
+      "kind": "stage",
+      "label": "已在产业工作",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "industry"
+    },
+    {
+      "id": "other",
+      "kind": "stage",
+      "label": "其他",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "degree_none",
+      "kind": "degree",
+      "label": "尚未取得学士学位",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "degree_bachelor",
+      "kind": "degree",
+      "label": "学士",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "degree_master",
+      "kind": "degree",
+      "label": "硕士",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "degree_doctor",
+      "kind": "degree",
+      "label": "博士",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "city_shanghai",
+      "kind": "city",
+      "label": "上海",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "上海"
+    },
+    {
+      "id": "city_beijing",
+      "kind": "city",
+      "label": "北京",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "北京"
+    },
+    {
+      "id": "city_shenzhen",
+      "kind": "city",
+      "label": "深圳",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "深圳"
+    },
+    {
+      "id": "city_guangzhou",
+      "kind": "city",
+      "label": "广州",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "广州"
+    },
+    {
+      "id": "city_hangzhou",
+      "kind": "city",
+      "label": "杭州",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "杭州"
+    },
+    {
+      "id": "occ_clinical",
+      "kind": "occupation",
+      "label": "临床工作",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_consulting",
+      "kind": "occupation",
+      "label": "咨询与战略",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "consulting"
+    },
+    {
+      "id": "occ_data",
+      "kind": "occupation",
+      "label": "数据与商业分析",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "internet"
+    },
+    {
+      "id": "occ_product",
+      "kind": "occupation",
+      "label": "产品与项目",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "internet"
+    },
+    {
+      "id": "occ_research",
+      "kind": "occupation",
+      "label": "用户与市场研究",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "consulting"
+    },
+    {
+      "id": "occ_operations",
+      "kind": "occupation",
+      "label": "运营与客户成功",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_content",
+      "kind": "occupation",
+      "label": "内容与科学传播",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_hr",
+      "kind": "occupation",
+      "label": "人才与组织",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_supplychain",
+      "kind": "occupation",
+      "label": "供应链与流程",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_policy",
+      "kind": "occupation",
+      "label": "政策与公益项目",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_education",
+      "kind": "occupation",
+      "label": "教育与培训",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_investment",
+      "kind": "occupation",
+      "label": "投资与行业研究",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "investment"
+    },
+    {
+      "id": "occ_medical_affairs",
+      "kind": "occupation",
+      "label": "医学事务",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "pharma"
+    },
+    {
+      "id": "occ_business",
+      "kind": "occupation",
+      "label": "商务与销售",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "other"
+    },
+    {
+      "id": "occ_ai_application",
+      "kind": "occupation",
+      "label": "AI应用与评估",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "medical-ai"
+    },
+    {
+      "id": "ind_health",
+      "kind": "industry",
+      "label": "医疗健康",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_software",
+      "kind": "industry",
+      "label": "软件与互联网",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_consumer",
+      "kind": "industry",
+      "label": "消费与零售",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_manufacturing",
+      "kind": "industry",
+      "label": "制造",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_logistics",
+      "kind": "industry",
+      "label": "物流",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_education",
+      "kind": "industry",
+      "label": "教育",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_finance",
+      "kind": "industry",
+      "label": "金融",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "ind_public",
+      "kind": "industry",
+      "label": "公共服务与公益",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "explore",
+      "kind": "need",
+      "label": "了解不同职业方向",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "explore"
+    },
+    {
+      "id": "opportunities",
+      "kind": "need",
+      "label": "寻找实习或工作",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "opportunities"
+    },
+    {
+      "id": "network",
+      "kind": "need",
+      "label": "认识同行或前辈",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "network"
+    },
+    {
+      "id": "resume",
+      "kind": "need",
+      "label": "完善求职准备",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "resume"
+    },
+    {
+      "id": "exp_clinical",
+      "kind": "experience_type",
+      "label": "临床轮转",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_research",
+      "kind": "experience_type",
+      "label": "科研",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_company",
+      "kind": "experience_type",
+      "label": "企业实习或工作",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_community",
+      "kind": "experience_type",
+      "label": "社团或社群运营",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_startup",
+      "kind": "experience_type",
+      "label": "创业或独立项目",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_volunteer",
+      "kind": "experience_type",
+      "label": "志愿服务",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "exp_none",
+      "kind": "experience_type",
+      "label": "暂时没有",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "sql_0",
+      "kind": "level",
+      "label": "从未使用",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "sql_1",
+      "kind": "level",
+      "label": "学习过但尚未实际完成",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "sql_2",
+      "kind": "level",
+      "label": "在指导下完成简单查询",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "sql_3",
+      "kind": "level",
+      "label": "独立完成筛选和汇总",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "sql_4",
+      "kind": "level",
+      "label": "独立完成多表关联与结果校验",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "recent_3m",
+      "kind": "availability",
+      "label": "过去3个月内",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "recent_12m",
+      "kind": "availability",
+      "label": "超过3个月且在12个月内",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "recent_older",
+      "kind": "availability",
+      "label": "超过12个月",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "mode_onsite",
+      "kind": "preference",
+      "label": "现场",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "mode_hybrid",
+      "kind": "preference",
+      "label": "混合",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "mode_remote",
+      "kind": "preference",
+      "label": "远程",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    },
+    {
+      "id": "share_yes",
+      "kind": "boolean_choice",
+      "label": "愿意",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "true"
+    },
+    {
+      "id": "share_no",
+      "kind": "boolean_choice",
+      "label": "暂不愿意",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": "false"
+    },
+    {
+      "id": "skill_sql",
+      "kind": "skill",
+      "label": "关系数据查询",
+      "status": "active",
+      "replacedBy": null,
+      "legacyValue": null
+    }
+  ],
+  "fields": [
+    {
+      "id": "current_stage",
+      "label": "你目前处于哪个阶段？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "student",
+        "graduate",
+        "resident",
+        "clinician",
+        "industry",
+        "other"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "highest_awarded_degree",
+      "label": "你已获得的最高学位？在读学位请以后续教育经历记录。",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "degree_none",
+        "degree_bachelor",
+        "degree_master",
+        "degree_doctor"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "current_city",
+      "label": "你当前主要所在城市？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "city_shanghai",
+        "city_beijing",
+        "city_shenzhen",
+        "city_guangzhou",
+        "city_hangzhou"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "target_occupations",
+      "label": "你想进一步了解哪些职能？最多选择5项。",
+      "cardinality": "multiple",
+      "allowedConceptIds": [
+        "occ_clinical",
+        "occ_consulting",
+        "occ_data",
+        "occ_product",
+        "occ_research",
+        "occ_operations",
+        "occ_content",
+        "occ_hr",
+        "occ_supplychain",
+        "occ_policy",
+        "occ_education",
+        "occ_investment",
+        "occ_medical_affairs",
+        "occ_business",
+        "occ_ai_application"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "target_industries",
+      "label": "你愿意探索哪些行业？最多选择5项。",
+      "cardinality": "multiple",
+      "allowedConceptIds": [
+        "ind_health",
+        "ind_software",
+        "ind_consumer",
+        "ind_manufacturing",
+        "ind_logistics",
+        "ind_education",
+        "ind_finance",
+        "ind_public"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "current_need",
+      "label": "你现在最希望获得哪类帮助？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "explore",
+        "opportunities",
+        "network",
+        "resume"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "experience_types",
+      "label": "你有哪些经历类型？",
+      "cardinality": "multiple",
+      "allowedConceptIds": [
+        "exp_clinical",
+        "exp_research",
+        "exp_company",
+        "exp_community",
+        "exp_startup",
+        "exp_volunteer",
+        "exp_none"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "sql_behavior",
+      "label": "你使用SQL完成过的最高程度？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "sql_0",
+        "sql_1",
+        "sql_2",
+        "sql_3",
+        "sql_4"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "sql_recency",
+      "label": "你最近一次实际使用SQL是什么时候？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "recent_3m",
+        "recent_12m",
+        "recent_older"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "work_modes",
+      "label": "你可接受哪些工作方式？",
+      "cardinality": "multiple",
+      "allowedConceptIds": [
+        "mode_onsite",
+        "mode_hybrid",
+        "mode_remote"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    },
+    {
+      "id": "share_experience",
+      "label": "愿意在运营者另行征求同意后分享经历吗？",
+      "cardinality": "single",
+      "allowedConceptIds": [
+        "share_yes",
+        "share_no"
+      ],
+      "groupId": null,
+      "purpose": "personal_analysis",
+      "status": "active"
+    }
+  ],
+  "createdAt": 1790485200000
+}

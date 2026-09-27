@@ -1,0 +1,753 @@
+{
+  "_id": "onboarding_1.0.0",
+  "schemaVersion": "1.0.0",
+  "questionnaireId": "onboarding",
+  "version": "1.0.0",
+  "catalogId": "catalog_1.0.0",
+  "mappingVersion": "1.0.0",
+  "status": "draft",
+  "noticeVersion": "1.0.0",
+  "repeatGroups": [],
+  "questions": [
+    {
+      "id": "q_stage",
+      "fieldId": "current_stage",
+      "groupId": null,
+      "title": "你目前处于哪个阶段？",
+      "control": "single",
+      "required": true,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog"
+      ],
+      "options": [
+        {
+          "id": "q_stage_1",
+          "label": "医学生或在读",
+          "valueCodes": [
+            "student"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_stage_2",
+          "label": "毕业后探索中",
+          "valueCodes": [
+            "graduate"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_stage_3",
+          "label": "规培或临床早期",
+          "valueCodes": [
+            "resident"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_stage_4",
+          "label": "临床或医疗从业者",
+          "valueCodes": [
+            "clinician"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_stage_5",
+          "label": "已在产业工作",
+          "valueCodes": [
+            "industry"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_stage_6",
+          "label": "其他",
+          "valueCodes": [
+            "other"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_degree",
+      "fieldId": "highest_awarded_degree",
+      "groupId": null,
+      "title": "你已获得的最高学位？在读学位请以后续教育经历记录。",
+      "control": "single",
+      "required": true,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog"
+      ],
+      "options": [
+        {
+          "id": "q_degree_1",
+          "label": "尚未取得学士学位",
+          "valueCodes": [
+            "degree_none"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_degree_2",
+          "label": "学士",
+          "valueCodes": [
+            "degree_bachelor"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_degree_3",
+          "label": "硕士",
+          "valueCodes": [
+            "degree_master"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_degree_4",
+          "label": "博士",
+          "valueCodes": [
+            "degree_doctor"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_city",
+      "fieldId": "current_city",
+      "groupId": null,
+      "title": "你当前主要所在城市？",
+      "control": "single",
+      "required": false,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_city_1",
+          "label": "上海",
+          "valueCodes": [
+            "city_shanghai"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_city_2",
+          "label": "北京",
+          "valueCodes": [
+            "city_beijing"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_city_3",
+          "label": "深圳",
+          "valueCodes": [
+            "city_shenzhen"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_city_4",
+          "label": "广州",
+          "valueCodes": [
+            "city_guangzhou"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_city_5",
+          "label": "杭州",
+          "valueCodes": [
+            "city_hangzhou"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_occupation",
+      "fieldId": "target_occupations",
+      "groupId": null,
+      "title": "你想进一步了解哪些职能？最多选择5项。",
+      "control": "multi",
+      "required": true,
+      "maxSelections": 5,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog"
+      ],
+      "options": [
+        {
+          "id": "q_occupation_1",
+          "label": "临床工作",
+          "valueCodes": [
+            "occ_clinical"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_2",
+          "label": "咨询与战略",
+          "valueCodes": [
+            "occ_consulting"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_3",
+          "label": "数据与商业分析",
+          "valueCodes": [
+            "occ_data"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_4",
+          "label": "产品与项目",
+          "valueCodes": [
+            "occ_product"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_5",
+          "label": "用户与市场研究",
+          "valueCodes": [
+            "occ_research"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_6",
+          "label": "运营与客户成功",
+          "valueCodes": [
+            "occ_operations"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_7",
+          "label": "内容与科学传播",
+          "valueCodes": [
+            "occ_content"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_8",
+          "label": "人才与组织",
+          "valueCodes": [
+            "occ_hr"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_9",
+          "label": "供应链与流程",
+          "valueCodes": [
+            "occ_supplychain"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_10",
+          "label": "政策与公益项目",
+          "valueCodes": [
+            "occ_policy"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_11",
+          "label": "教育与培训",
+          "valueCodes": [
+            "occ_education"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_12",
+          "label": "投资与行业研究",
+          "valueCodes": [
+            "occ_investment"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_13",
+          "label": "医学事务",
+          "valueCodes": [
+            "occ_medical_affairs"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_14",
+          "label": "商务与销售",
+          "valueCodes": [
+            "occ_business"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_occupation_15",
+          "label": "AI应用与评估",
+          "valueCodes": [
+            "occ_ai_application"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_industry",
+      "fieldId": "target_industries",
+      "groupId": null,
+      "title": "你愿意探索哪些行业？最多选择5项。",
+      "control": "multi",
+      "required": false,
+      "maxSelections": 5,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_industry_1",
+          "label": "医疗健康",
+          "valueCodes": [
+            "ind_health"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_2",
+          "label": "软件与互联网",
+          "valueCodes": [
+            "ind_software"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_3",
+          "label": "消费与零售",
+          "valueCodes": [
+            "ind_consumer"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_4",
+          "label": "制造",
+          "valueCodes": [
+            "ind_manufacturing"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_5",
+          "label": "物流",
+          "valueCodes": [
+            "ind_logistics"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_6",
+          "label": "教育",
+          "valueCodes": [
+            "ind_education"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_7",
+          "label": "金融",
+          "valueCodes": [
+            "ind_finance"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_industry_8",
+          "label": "公共服务与公益",
+          "valueCodes": [
+            "ind_public"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_need",
+      "fieldId": "current_need",
+      "groupId": null,
+      "title": "你现在最希望获得哪类帮助？",
+      "control": "single",
+      "required": true,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog"
+      ],
+      "options": [
+        {
+          "id": "q_need_1",
+          "label": "了解不同职业方向",
+          "valueCodes": [
+            "explore"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_need_2",
+          "label": "寻找实习或工作",
+          "valueCodes": [
+            "opportunities"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_need_3",
+          "label": "认识同行或前辈",
+          "valueCodes": [
+            "network"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_need_4",
+          "label": "完善求职准备",
+          "valueCodes": [
+            "resume"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_experience",
+      "fieldId": "experience_types",
+      "groupId": null,
+      "title": "你有哪些经历类型？",
+      "control": "multi",
+      "required": false,
+      "maxSelections": 5,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_experience_1",
+          "label": "临床轮转",
+          "valueCodes": [
+            "exp_clinical"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_2",
+          "label": "科研",
+          "valueCodes": [
+            "exp_research"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_3",
+          "label": "企业实习或工作",
+          "valueCodes": [
+            "exp_company"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_4",
+          "label": "社团或社群运营",
+          "valueCodes": [
+            "exp_community"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_5",
+          "label": "创业或独立项目",
+          "valueCodes": [
+            "exp_startup"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_6",
+          "label": "志愿服务",
+          "valueCodes": [
+            "exp_volunteer"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_experience_7",
+          "label": "暂时没有",
+          "valueCodes": [
+            "exp_none"
+          ],
+          "exclusive": true
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_sql",
+      "fieldId": "sql_behavior",
+      "groupId": null,
+      "title": "你使用SQL完成过的最高程度？",
+      "control": "single",
+      "required": false,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_sql_1",
+          "label": "从未使用",
+          "valueCodes": [
+            "sql_0"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_2",
+          "label": "学习过但尚未实际完成",
+          "valueCodes": [
+            "sql_1"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_3",
+          "label": "在指导下完成简单查询",
+          "valueCodes": [
+            "sql_2"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_4",
+          "label": "独立完成筛选和汇总",
+          "valueCodes": [
+            "sql_3"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_5",
+          "label": "独立完成多表关联与结果校验",
+          "valueCodes": [
+            "sql_4"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_sql_recent",
+      "fieldId": "sql_recency",
+      "groupId": null,
+      "title": "你最近一次实际使用SQL是什么时候？",
+      "control": "single",
+      "required": false,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_sql_recent_1",
+          "label": "过去3个月内",
+          "valueCodes": [
+            "recent_3m"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_recent_2",
+          "label": "超过3个月且在12个月内",
+          "valueCodes": [
+            "recent_12m"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_sql_recent_3",
+          "label": "超过12个月",
+          "valueCodes": [
+            "recent_older"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": {
+        "questionId": "q_sql",
+        "optionIdsAny": [
+          "q_sql_3",
+          "q_sql_4",
+          "q_sql_5"
+        ]
+      }
+    },
+    {
+      "id": "q_workmode",
+      "fieldId": "work_modes",
+      "groupId": null,
+      "title": "你可接受哪些工作方式？",
+      "control": "multi",
+      "required": false,
+      "maxSelections": 5,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_workmode_1",
+          "label": "现场",
+          "valueCodes": [
+            "mode_onsite"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_workmode_2",
+          "label": "混合",
+          "valueCodes": [
+            "mode_hybrid"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_workmode_3",
+          "label": "远程",
+          "valueCodes": [
+            "mode_remote"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    },
+    {
+      "id": "q_share",
+      "fieldId": "share_experience",
+      "groupId": null,
+      "title": "愿意在运营者另行征求同意后分享经历吗？",
+      "control": "single",
+      "required": false,
+      "maxSelections": 1,
+      "allowMissingStatuses": [
+        "unknown",
+        "prefer_not_to_say",
+        "not_in_catalog",
+        "skipped"
+      ],
+      "options": [
+        {
+          "id": "q_share_1",
+          "label": "愿意",
+          "valueCodes": [
+            "share_yes"
+          ],
+          "exclusive": false
+        },
+        {
+          "id": "q_share_2",
+          "label": "暂不愿意",
+          "valueCodes": [
+            "share_no"
+          ],
+          "exclusive": false
+        }
+      ],
+      "showWhen": null
+    }
+  ],
+  "skillRules": [
+    {
+      "questionId": "q_sql",
+      "optionId": "q_sql_1",
+      "conceptId": "skill_sql",
+      "levelCode": "sql_0",
+      "scaleVersion": "1.0.0",
+      "evidenceType": "self_report"
+    },
+    {
+      "questionId": "q_sql",
+      "optionId": "q_sql_2",
+      "conceptId": "skill_sql",
+      "levelCode": "sql_1",
+      "scaleVersion": "1.0.0",
+      "evidenceType": "self_report"
+    },
+    {
+      "questionId": "q_sql",
+      "optionId": "q_sql_3",
+      "conceptId": "skill_sql",
+      "levelCode": "sql_2",
+      "scaleVersion": "1.0.0",
+      "evidenceType": "self_report"
+    },
+    {
+      "questionId": "q_sql",
+      "optionId": "q_sql_4",
+      "conceptId": "skill_sql",
+      "levelCode": "sql_3",
+      "scaleVersion": "1.0.0",
+      "evidenceType": "self_report"
+    },
+    {
+      "questionId": "q_sql",
+      "optionId": "q_sql_5",
+      "conceptId": "skill_sql",
+      "levelCode": "sql_4",
+      "scaleVersion": "1.0.0",
+      "evidenceType": "self_report"
+    }
+  ],
+  "createdAt": 1790485200000
+}

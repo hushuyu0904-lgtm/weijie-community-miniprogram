@@ -1,0 +1,226 @@
+{
+  "version": "1.0.0",
+  "format": "human_reviewed_index_plan_not_cloudbase_cli_config",
+  "collections": [
+    {
+      "name": "talent_links",
+      "schemaRef": "collections.schema.json#/$defs/talent_links",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_catalogs",
+      "schemaRef": "collections.schema.json#/$defs/talent_catalogs",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_questionnaires",
+      "schemaRef": "collections.schema.json#/$defs/talent_questionnaires",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_submissions",
+      "schemaRef": "collections.schema.json#/$defs/talent_submissions",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_profiles",
+      "schemaRef": "collections.schema.json#/$defs/talent_profiles",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_consent_events",
+      "schemaRef": "collections.schema.json#/$defs/talent_consent_events",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_outbox",
+      "schemaRef": "collections.schema.json#/$defs/talent_outbox",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_jobs",
+      "schemaRef": "collections.schema.json#/$defs/talent_jobs",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_match_results",
+      "schemaRef": "collections.schema.json#/$defs/talent_match_results",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    },
+    {
+      "name": "talent_rights_requests",
+      "schemaRef": "collections.schema.json#/$defs/talent_rights_requests",
+      "clientRule": {
+        "read": false,
+        "write": false
+      }
+    }
+  ],
+  "indexes": [
+    {
+      "collection": "talent_links",
+      "name": "person_unique",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ]
+      ],
+      "unique": true
+    },
+    {
+      "collection": "talent_submissions",
+      "name": "person_request_unique",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ],
+        [
+          "requestId",
+          "asc"
+        ]
+      ],
+      "unique": true
+    },
+    {
+      "collection": "talent_submissions",
+      "name": "person_history",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ],
+        [
+          "profileVersion",
+          "desc"
+        ]
+      ],
+      "unique": true
+    },
+    {
+      "collection": "talent_consent_events",
+      "name": "person_purpose_history",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ],
+        [
+          "purpose",
+          "asc"
+        ],
+        [
+          "aggregateVersion",
+          "desc"
+        ]
+      ],
+      "unique": false
+    },
+    {
+      "collection": "talent_outbox",
+      "name": "pending_delivery",
+      "fields": [
+        [
+          "status",
+          "asc"
+        ],
+        [
+          "nextAttemptAt",
+          "asc"
+        ]
+      ],
+      "unique": false
+    },
+    {
+      "collection": "talent_jobs",
+      "name": "open_jobs",
+      "fields": [
+        [
+          "status",
+          "asc"
+        ],
+        [
+          "updatedAt",
+          "desc"
+        ],
+        [
+          "_id",
+          "desc"
+        ]
+      ],
+      "unique": false
+    },
+    {
+      "collection": "talent_match_results",
+      "name": "person_matches",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ],
+        [
+          "profileVersion",
+          "asc"
+        ],
+        [
+          "generatedAt",
+          "desc"
+        ],
+        [
+          "_id",
+          "desc"
+        ]
+      ],
+      "unique": false
+    },
+    {
+      "collection": "talent_rights_requests",
+      "name": "deletion_request",
+      "fields": [
+        [
+          "personId",
+          "asc"
+        ],
+        [
+          "requestId",
+          "asc"
+        ]
+      ],
+      "unique": true
+    }
+  ],
+  "notes": [
+    "所有集合的_id默认唯一；talent_links._id必须等于memberKey，profile._id必须等于personId。",
+    "清单不创建索引；按控制台真实能力与查询计划配置。先检查已有重复值。",
+    "岗位筛选涉及多值数组，首版有界取数后筛选返回；不要宣称上述索引覆盖任意组合。生产规模增加后建立按职能/行业/城市拆行的检索投影。",
+    "没有任何生产种子用户、微信标识或职位数据。"
+  ]
+}
