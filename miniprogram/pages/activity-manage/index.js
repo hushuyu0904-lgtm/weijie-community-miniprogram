@@ -35,5 +35,10 @@ Page({
     const id = event.currentTarget.dataset.id;
     if (id && !this.data.items.some(item => item.id === id)) return;
     wx.navigateTo({ url: '/pages/activity-edit/index' + (id ? '?id=' + encodeURIComponent(id) : ''), fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openRegistrations(event) {
+    const id = event.currentTarget.dataset.id;
+    if (!id || !this.data.items.some(item => item.id === id && item.status === 'published')) return;
+    wx.navigateTo({ url: '/pages/activity-registrations/index?id=' + encodeURIComponent(id), fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
   }
 });

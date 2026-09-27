@@ -207,14 +207,16 @@ async function main() {
       assert.equal(p.data.status, 'loading');
     }
   });
-  await check('closed pages have no simulated actions or identity grant', () => {
+  await check('closed resources and connections do not simulate success; activity has a real registration action', () => {
     for (const name of ['jobs', 'community']) {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
       assert.match(markup, /尚未开放/);
       assert(!/<button|bindtap=/.test(markup));
       assert.equal(Object.keys(page(name).definition).length, 0);
     }
-    assert.match(read(path.join(mp, 'pages/activity-detail/index.wxml')), /报名功能尚未开放/);
+    const detailMarkup = read(path.join(mp, 'pages/activity-detail/index.wxml'));
+    assert.match(detailMarkup, /免费报名/);
+    assert.equal(typeof page('activity-detail').definition.register, 'function');
   });
   console.log(`${checks} groups passed. Node static and page-logic checks only; not WeChat rendering or device verification.`);
 }

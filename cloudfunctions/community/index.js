@@ -3,6 +3,10 @@ const crypto = require('node:crypto');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const FIELDS = ['title', 'description', 'location', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy'];
+const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeed', 'experience', 'shareExperience'];
+const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
+const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'other'];
+const NEEDS = ['explore', 'opportunities', 'network', 'resume'];
 
 function fail(code, message) {
   const error = new Error(message);
@@ -15,6 +19,50 @@ function fieldsOnly(value, allowed) {
       Object.keys(value).some(key => !allowed.includes(key))) {
     fail('INVALID_ARGUMENT', '请求包含不允许的字段');
   }
+}
+
+function textField(value, name, limit, required = true) {
+  if (typeof value !== 'string' || value.length > limit || (required && !value.trim())) {
+    fail('INVALID_ARGUMENT', name + (required ? '为必填项' : '格式无效'));
+  }
+  return value.trim();
+}
+
+function profileInput(value) {
+  fieldsOnly(value, PROFILE_FIELDS);
+  if (!STAGES.includes(value.stage)) fail('INVALID_ARGUMENT', '请选择当前阶段');
+  if (!Array.isArray(value.directions) || value.directions.length < 1 || value.directions.length > 5 ||
+      new Set(value.directions).size !== value.directions.length || value.directions.some(item => !DIRECTIONS.includes(item))) {
+    fail('INVALID_ARGUMENT', '请选择 1 至 5 个感兴趣方向');
+  }
+  if (!NEEDS.includes(value.currentNeed)) fail('INVALID_ARGUMENT', '请选择当前最希望解决的问题');
+  if (typeof value.shareExperience !== 'boolean') fail('INVALID_ARGUMENT', '分享意愿格式无效');
+  return {
+    displayName: textField(value.displayName, '称呼', 30),
+    stage: value.stage,
+    organization: textField(value.organization, '学校或单位', 100),
+    specialty: textField(value.specialty, '专业或岗位方向', 80),
+    city: textField(value.city, '所在城市', 40),
+    directions: value.directions.slice(),
+    currentNeed: value.currentNeed,
+    experience: textField(value.experience, '经历介绍', 1000, false),
+    shareExperience: value.shareExperience
+  };
+}
+
+function consentInput(value) {
+  fieldsOnly(value, ['privacyAccepted', 'opportunityOptIn']);
+  if (value.privacyAccepted !== true || typeof value.opportunityOptIn !== 'boolean') {
+    fail('INVALID_ARGUMENT', '请确认隐私说明并检查授权选项');
+  }
+  return { privacyAccepted: true, opportunityOptIn: value.opportunityOptIn };
+}
+
+function safeProfile(member) {
+  if (!member || !member.profile) return null;
+  const profile = {};
+  for (const field of PROFILE_FIELDS) profile[field] = Array.isArray(member.profile[field]) ? member.profile[field].slice() : member.profile[field];
+  return profile;
 }
 
 function activityInput(value, publishing) {
@@ -40,6 +88,7 @@ function activityInput(value, publishing) {
     fail('INVALID_ARGUMENT', '结束须晚于开始，报名截止不得晚于开始');
   }
   if (publishing && result.deadlineAt <= Date.now()) fail('INVALID_ARGUMENT', '发布时报名截止时间必须在未来');
+  if (publishing && result.priceFen !== 0) fail('INVALID_ARGUMENT', '小程序首发仅支持发布免费活动');
   return result;
 }
 
@@ -59,9 +108,66 @@ async function findActivity(id) {
 }
 
 function visibleActivity(item) {
-  const result = { id: item._id, status: item.status, version: item.version };
+  const result = { id: item._id, status: item.status, version: item.version,
+    registrationCount: Number.isSafeInteger(item.registrationCount) && item.registrationCount >= 0 ? item.registrationCount : 0 };
   for (const field of FIELDS) result[field] = item[field];
   return result; // 不向成员返回创建者身份、成员记录或内部数据库字段。
+}
+
+function registrationId(activityId, memberKey) {
+  return 'r-' + crypto.createHash('sha256').update(activityId + ':' + memberKey).digest('hex');
+}
+
+function visibleRegistration(item) {
+  return { id: item._id, activityId: item.activityId, activityTitle: item.activityTitle, activityStartAt: item.activityStartAt,
+    location: item.location, status: item.status, createdAt: item.createdAt };
+}
+
+async function registerActivity(event, actor, member) {
+  const activityId = validId(event.id);
+  const id = registrationId(activityId, actor);
+  return db.runTransaction(async transaction => {
+    const activityRow = await transaction.collection('activities').where({ _id: activityId }).limit(1).get();
+    const activity = activityRow.data[0];
+    if (!activity || activity.status !== 'published') fail('NOT_FOUND', '活动不存在或尚未发布');
+    if (activity.priceFen !== 0) fail('INVALID_ARGUMENT', '首发阶段仅支持免费活动报名');
+    if (activity.deadlineAt <= Date.now()) fail('INVALID_ARGUMENT', '报名已截止');
+    const existingRow = await transaction.collection('registrations').where({ _id: id }).limit(1).get();
+    const existing = existingRow.data[0];
+    if (existing) return visibleRegistration(existing);
+    const count = Number.isSafeInteger(activity.registrationCount) && activity.registrationCount >= 0 ? activity.registrationCount : 0;
+    const status = count < activity.capacity ? 'confirmed' : 'waitlist';
+    const record = {
+      _id: id, activityId, memberKey: actor, status, createdAt: Date.now(),
+      activityTitle: activity.title, activityStartAt: activity.startAt, location: activity.location,
+      displayName: member.profile && member.profile.displayName || '未填写称呼',
+      organization: member.profile && member.profile.organization || '',
+      specialty: member.profile && member.profile.specialty || ''
+    };
+    await transaction.collection('registrations').add({ data: record });
+    if (status === 'confirmed') {
+      await transaction.collection('activities').where({ _id: activityId }).update({ data: { registrationCount: count + 1, updatedAt: Date.now() } });
+    }
+    return visibleRegistration(record);
+  });
+}
+
+async function findRegistration(activityId, memberKey) {
+  const result = await db.collection('registrations').where({ _id: registrationId(activityId, memberKey) }).limit(1).get();
+  return result.data[0] || null;
+}
+
+async function listMyRegistrations(memberKey, offset) {
+  const result = await db.collection('registrations').where({ memberKey }).orderBy('createdAt', 'desc').skip(offset).limit(20).get();
+  return result.data.map(visibleRegistration);
+}
+
+async function listActivityRegistrations(activityId, offset) {
+  const result = await db.collection('registrations').where({ activityId }).orderBy('createdAt', 'asc').skip(offset).limit(20).get();
+  return result.data.map(item => ({
+    id: item._id, status: item.status, createdAt: item.createdAt,
+    displayName: item.displayName || '未填写称呼', organization: item.organization || '', specialty: item.specialty || ''
+  }));
 }
 
 function requireMember(member) {
@@ -75,6 +181,34 @@ function requireAdmin(member) {
   if (member.role !== 'admin') fail('FORBIDDEN', '无管理权限');
 }
 
+async function saveProfile(memberKey, existing, profile, consents) {
+  const now = Date.now();
+  const changes = {
+    profile,
+    consent: Object.assign({ version: 'v0.1' }, consents),
+    profileUpdatedAt: now
+  };
+  if (existing) {
+    if (existing.active !== true) fail('FORBIDDEN', '当前账号不可注册，请联系运营者');
+    await db.collection('members').where({ _id: memberKey }).update({ data: changes });
+    return Object.assign({}, existing, changes);
+  }
+  const record = Object.assign({}, changes, {
+    _id: memberKey, role: 'member', active: true, registeredAt: now
+  });
+  try {
+    await db.collection('members').add({ data: record });
+    return record;
+  } catch (error) {
+    const found = await db.collection('members').where({ _id: memberKey }).limit(1).get();
+    const latest = found.data[0];
+    if (!latest) throw error;
+    if (latest.active !== true) fail('FORBIDDEN', '当前账号不可注册，请联系运营者');
+    await db.collection('members').where({ _id: memberKey }).update({ data: changes });
+    return Object.assign({}, latest, changes);
+  }
+}
+
 async function saveDraft(event, actor) {
   const id = validId(event.id);
   const version = expectedVersion(event.version);
@@ -85,7 +219,7 @@ async function saveDraft(event, actor) {
     if (version !== 0) fail('CONFLICT', '草稿不存在，请返回活动管理核实');
     const record = Object.assign({}, input, {
       _id: id, status: 'draft', version: 1, createdBy: actor,
-      createdAt: Date.now(), updatedAt: Date.now()
+      createdAt: Date.now(), updatedAt: Date.now(), registrationCount: 0
     });
     try {
       await collection.add({ data: record });
@@ -140,22 +274,55 @@ exports.main = async event => {
     const active = !!member && member.active === true && ['admin', 'member'].includes(member.role);
     const action = event && event.action;
     const allowed = {
-      identity: [], listActivities: ['offset'], getActivity: ['id'],
+      identity: [], completeOnboarding: ['profile', 'consents'], updateProfile: ['profile', 'consents'],
+      listActivities: ['offset'], getActivity: ['id'],
+      registerActivity: ['id'], listMyRegistrations: ['offset'], listActivityRegistrations: ['id', 'offset'],
       listManagedActivities: ['offset'], getManagedActivity: ['id'],
       saveDraft: ['id', 'version', 'activity'], publishActivity: ['id', 'version']
     };
     if (!Object.prototype.hasOwnProperty.call(allowed, action)) fail('INVALID_ARGUMENT', '不支持的操作');
     // userInfo 可能由平台附加，但绝不用于身份或角色判断。
     fieldsOnly(event, ['action', 'userInfo'].concat(allowed[action]));
-    if (action === 'identity') return { ok: true, data: { memberKey, role: active ? member.role : 'visitor', canBrowse: active } };
+    if (action === 'identity') return { ok: true, data: {
+      memberKey,
+      role: active ? member.role : 'visitor',
+      canBrowse: active,
+      hasProfile: !!safeProfile(member),
+      profile: safeProfile(member),
+      opportunityOptIn: !!(member && member.consent && member.consent.opportunityOptIn)
+    } };
+    if (action === 'completeOnboarding' || action === 'updateProfile') {
+      if (action === 'updateProfile') requireMember(member);
+      const profile = profileInput(event.profile);
+      const consents = consentInput(event.consents);
+      const saved = await saveProfile(memberKey, member, profile, consents);
+      return { ok: true, data: {
+        memberKey,
+        role: saved.role,
+        canBrowse: saved.active === true,
+        hasProfile: true,
+        profile: safeProfile(saved),
+        opportunityOptIn: saved.consent.opportunityOptIn
+      } };
+    }
     requireMember(member);
-    if (['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity'].includes(action)) requireAdmin(member);
+    if (['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations'].includes(action)) requireAdmin(member);
     let data;
     if (action === 'saveDraft') data = await saveDraft(event, memberKey);
     else if (action === 'publishActivity') data = await publishActivity(event);
+    else if (action === 'registerActivity') data = await registerActivity(event, memberKey, member);
+    else if (action === 'listMyRegistrations' || action === 'listActivityRegistrations') {
+      const offset = event.offset === undefined ? 0 : event.offset;
+      if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10000) fail('INVALID_ARGUMENT', '分页参数无效');
+      data = action === 'listMyRegistrations' ? await listMyRegistrations(memberKey, offset) : await listActivityRegistrations(validId(event.id), offset);
+    }
     else if (action === 'getActivity' || action === 'getManagedActivity') {
       const item = await findActivity(validId(event.id));
       data = item && (action === 'getManagedActivity' || item.status === 'published') ? visibleActivity(item) : null;
+      if (data && action === 'getActivity') {
+        const registration = await findRegistration(item._id, memberKey);
+        data.myRegistration = registration ? visibleRegistration(registration) : null;
+      }
     } else {
       const offset = event.offset === undefined ? 0 : event.offset;
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10000) fail('INVALID_ARGUMENT', '分页参数无效');

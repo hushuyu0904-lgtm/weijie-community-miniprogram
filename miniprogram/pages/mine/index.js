@@ -1,6 +1,6 @@
 const cloud = require('../../services/cloud');
 Page({
-  data: { status: 'loading', identity: null, error: '' },
+  data: { status: 'loading', identity: null, error: '', stageLabel: '', directionLabels: '' },
   onShow() { this._active = true; return this.loadIdentity(); },
   onHide() { this._active = false; this._request++; this.setData({ identity: null }); },
   onUnload() { this._active = false; },
@@ -9,7 +9,7 @@ Page({
     this.setData({ status: 'loading', identity: null, error: '' });
     try {
       const identity = await cloud.call('identity');
-      if (this._active && request === this._request) this.setData({ identity, status: 'ready' });
+      if (this._active && request === this._request) this.setData({ identity, status: 'ready', stageLabel: this.stageLabel(identity), directionLabels: this.directionLabels(identity) });
     } catch (error) {
       if (this._active && request === this._request) this.setData({ status: 'error', error: error.message });
     }
@@ -17,6 +17,20 @@ Page({
   copyIdentity() {
     if (!this.data.identity) return;
     wx.setClipboardData({ data: this.data.identity.memberKey, fail() { wx.showToast({ title: '复制失败，请重试', icon: 'none' }); } });
+  },
+  stageLabel(identity) {
+    const labels = { student: '医学生 / 在读', graduate: '毕业后探索中', resident: '规培 / 临床早期', clinician: '临床 / 医疗从业者', industry: '已在产业工作', other: '其他' };
+    return identity && identity.profile ? labels[identity.profile.stage] || '待补充' : '';
+  },
+  directionLabels(identity) {
+    const labels = { 'medical-ai': '医疗 AI', pharma: '药企 / Biotech', consulting: '咨询', internet: '互联网 / 产品', startup: '创业', investment: '投资', other: '其他方向' };
+    return identity && identity.profile ? (identity.profile.directions || []).map(item => labels[item] || item).join('、') : '';
+  },
+  openOnboarding() {
+    wx.navigateTo({ url: '/pages/onboarding/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openRegistrations() {
+    wx.navigateTo({ url: '/pages/my-registrations/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
   },
   openManage() {
     if (!this.data.identity || this.data.identity.role !== 'admin') return;
