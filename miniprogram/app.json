@@ -5,6 +5,9 @@
     "pages/jobs/index",
     "pages/community/index",
     "pages/mine/index",
+    "pages/onboarding/index",
+    "pages/my-registrations/index",
+    "pages/activity-registrations/index",
     "pages/activity-manage/index",
     "pages/activity-edit/index"
   ],

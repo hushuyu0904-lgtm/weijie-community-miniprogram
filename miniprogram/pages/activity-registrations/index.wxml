@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="title">报名名单</view>
+  <view class="notice">仅管理员可见。名单仅用于活动组织与联络，不得导出或用于未经用户同意的用途。</view>
+  <view wx:if="{{status === 'loading'}}" class="state">加载中…</view>
+  <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="load">重试</button></view>
+  <block wx:else>
+    <view wx:if="{{!items.length}}" class="state">暂无报名记录。</view>
+    <view wx:for="{{items}}" wx:key="id" class="card"><view class="subtitle">{{item.displayName}}</view><view class="muted">{{item.organization}}{{item.specialty ? ' · ' + item.specialty : ''}}</view><view class="tag {{item.status === 'confirmed' ? 'confirmed' : 'waitlist'}}">{{item.status === 'confirmed' ? '已报名' : '候补中'}}</view></view>
+  </block>
+</view>

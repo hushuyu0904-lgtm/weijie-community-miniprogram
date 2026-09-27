@@ -22,12 +22,15 @@
   <view class="card">
     <view class="subtitle">参与说明</view>
     <view class="field"><text class="label">人数上限</text>{{activity.capacity}} 人{{activity.isDemo ? '（示例）' : ''}}</view>
+    <view wx:if="{{!activity.isDemo}}" class="field"><text class="label">当前确认报名</text>{{activity.registrationCount}} 人</view>
     <view class="field"><text class="label">报名截止</text>{{activity.deadlineText}}</view>
     <view class="muted">仅限本人报名一个名额。</view>
     <view wx:if="{{activity.priceFen > 0}}" class="notice">该活动包含收费信息，首发仅支持免费活动，目前不能报名或付款。</view>
   </view>
   <view class="registration-bar">
-    <view class="closed">报名功能尚未开放</view>
+    <view wx:if="{{activity.myRegistration}}" class="closed">{{activity.myRegistration.status === 'confirmed' ? '你已报名成功' : '你已进入候补名单'}}</view>
+    <button wx:elif="{{activity.canRegister}}" class="primary" loading="{{registering}}" disabled="{{registering}}" bindtap="register">免费报名</button>
+    <view wx:else class="closed">{{activity.priceFen > 0 ? '首发暂不支持收费报名' : '报名已截止'}}</view>
   </view>
   </block>
 </view>

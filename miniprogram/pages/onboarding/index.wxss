@@ -1,0 +1,13 @@
+.onboarding-page { padding-bottom: 96rpx; }
+.eyebrow { color: #187552; font-size: 24rpx; font-weight: 700; letter-spacing: 3rpx; margin-top: 12rpx; }
+.intro { color: #716978; margin: 12rpx 0 28rpx; }
+.picker { border: 1rpx solid #bcb2c5; border-radius: 14rpx; background: #fff; padding: 24rpx 20rpx; margin: 12rpx 0 28rpx; display: flex; justify-content: space-between; }
+.chip { display: inline-flex; align-items: center; margin: 0 12rpx 16rpx 0; padding: 12rpx 18rpx; border: 1rpx solid #d9d3df; border-radius: 999rpx; color: #514164; font-size: 26rpx; }
+.chip-selected { background: #e6f6ee; border-color: #187552; color: #155f42; }
+.chip checkbox { transform: scale(.72); margin-right: 4rpx; }
+.share-row { display: flex; gap: 20rpx; align-items: flex-start; margin-top: 12rpx; }
+.share-row switch { flex: 0 0 auto; margin-top: 4rpx; }
+.consent-card { font-size: 26rpx; }
+.consent-row { display: block; margin: 18rpx 0; }
+.consent-row checkbox { transform: scale(.78); margin-right: 4rpx; }
+.text-button { color: #187552; background: transparent; font-size: 26rpx; min-height: auto; padding: 0; margin: 16rpx 0 0; text-align: left; }

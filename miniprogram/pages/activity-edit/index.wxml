@@ -7,7 +7,8 @@
     <label for="title" class="label">活动标题（必填，最多 120 字）</label><input id="title" value="{{form.title}}" data-field="title" bindinput="inputField" maxlength="120" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="description" class="label">活动说明（必填，最多 5000 字）</label><textarea id="description" value="{{form.description}}" data-field="description" bindinput="inputField" maxlength="5000" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="location" class="label">地点（必填）</label><input id="location" value="{{form.location}}" data-field="location" bindinput="inputField" maxlength="200" disabled="{{busy || activityStatus === 'published'}}" />
-    <label for="price" class="label">费用（元，最多两位小数；本阶段不收款）</label><input id="price" type="digit" value="{{form.priceYuan}}" data-field="priceYuan" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
+    <label for="price" class="label">费用</label><input id="price" value="{{form.priceYuan}}" data-field="priceYuan" maxlength="16" disabled="{{true}}" />
+    <view class="muted">首发阶段仅支持免费活动；收费活动、支付和退款将在另行完成规则与资质后再开放。</view>
     <label for="capacity" class="label">人数上限（正整数）</label><input id="capacity" type="number" value="{{form.capacity}}" data-field="capacity" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="start" class="label">开始时间（YYYY-MM-DD HH:mm）</label><input id="start" placeholder="例如 2026-12-20 14:00" value="{{form.startAt}}" data-field="startAt" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="end" class="label">结束时间（YYYY-MM-DD HH:mm）</label><input id="end" placeholder="例如 2026-12-20 16:00" value="{{form.endAt}}" data-field="endAt" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />

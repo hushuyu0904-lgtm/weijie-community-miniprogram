@@ -10,6 +10,7 @@
       <view class="subtitle">{{item.title}}</view>
       <view class="muted">{{item.status === 'draft' ? '草稿 · 成员不可见' : '已发布 · 已获准成员可见'}}</view>
       <button class="secondary" data-id="{{item.id}}" bindtap="openEditor">{{item.status === 'draft' ? '编辑活动' : '查看活动'}}</button>
+      <button wx:if="{{item.status === 'published'}}" class="secondary" data-id="{{item.id}}" bindtap="openRegistrations">查看报名名单</button>
     </view>
     <view wx:if="{{error}}" class="state">{{error}}</view>
     <button wx:if="{{hasMore}}" class="secondary" loading="{{loadingMore}}" disabled="{{loadingMore}}" bindtap="loadMore">{{error ? '重试加载更多' : '加载更多'}}</button>

@@ -1,0 +1,1 @@
+.tag { display: inline-block; padding: 6rpx 16rpx; border-radius: 999rpx; font-size: 24rpx; }.confirmed { color: #155f42; background: #e6f6ee; }.waitlist { color: #765624; background: #fff2d9; }

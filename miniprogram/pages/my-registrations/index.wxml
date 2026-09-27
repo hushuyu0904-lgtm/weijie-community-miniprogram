@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="title">我的报名</view>
+  <view class="notice">首发活动均免费；候补不代表已获得名额。</view>
+  <view wx:if="{{status === 'loading'}}" class="state">加载中…</view>
+  <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="load">重试</button></view>
+  <block wx:else>
+    <view wx:if="{{!items.length}}" class="state">你还没有活动报名记录。</view>
+    <view wx:for="{{items}}" wx:key="id" class="card"><view class="subtitle">{{item.activityTitle}}</view><view class="field"><text class="label">时间</text>{{item.timeText}}</view><view class="field"><text class="label">地点</text>{{item.location}}</view><view class="tag {{item.status === 'confirmed' ? 'confirmed' : 'waitlist'}}">{{item.status === 'confirmed' ? '已报名' : '候补中'}}</view></view>
+  </block>
+</view>

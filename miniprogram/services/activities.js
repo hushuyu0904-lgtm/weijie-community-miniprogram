@@ -14,7 +14,8 @@ function forDisplay(activity) {
     isDemo: false, dateLabel: dateText(activity.startAt).slice(5,10).replace('-', '/'), cover: 'scene',
     priceText: activity.priceFen === 0 ? '免费' : '¥' + (activity.priceFen / 100).toFixed(2),
     timeText: dateText(activity.startAt) + ' 至 ' + dateText(activity.endAt) + '（北京时间）',
-    deadlineText: dateText(activity.deadlineAt) + '（北京时间）'
+    deadlineText: dateText(activity.deadlineAt) + '（北京时间）',
+    canRegister: activity.priceFen === 0 && activity.deadlineAt > Date.now()
   });
 }
 
@@ -29,4 +30,10 @@ async function getActivity(id) {
   return item ? forDisplay(item) : null;
 }
 
-module.exports = { sourceLabel, listActivities, getActivity };
+async function registerActivity(id) {
+  if (isDemo) throw new Error('演示模式不支持真实报名');
+  if (typeof id !== 'string' || !/^a-[a-z0-9-]{8,60}$/.test(id)) throw new Error('活动链接无效');
+  return cloud.call('registerActivity', { id });
+}
+
+module.exports = { sourceLabel, listActivities, getActivity, registerActivity };

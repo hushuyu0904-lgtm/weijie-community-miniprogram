@@ -1,15 +1,27 @@
 <view class="page">
   <view class="title">我的</view>
-  <view class="notice">身份和权限由服务端验证，不提供模拟管理员。</view>
   <view wx:if="{{status === 'loading'}}" class="state">正在验证微信身份…</view>
   <view wx:elif="{{status === 'error'}}" class="card state"><view>{{error}}</view><button class="primary" bindtap="loadIdentity">重试</button></view>
-  <view wx:else class="card">
-    <view class="subtitle">{{identity.role === 'admin' ? '管理员' : identity.canBrowse ? '社群成员' : '尚未获准访问社群'}}</view>
-    <view class="muted">{{identity.canBrowse ? '身份已由云函数确认' : '请将身份编号交给运营者核实，加入后重新验证。'}}</view>
-    <view class="field body"><text class="label">本人身份编号（仅用于成员登记，不是登录凭据）</text>{{identity.memberKey}}</view>
-    <button class="secondary" bindtap="copyIdentity">复制身份编号</button>
-    <button class="secondary" bindtap="loadIdentity">重新验证身份</button>
-    <button wx:if="{{identity.role === 'admin'}}" class="primary" bindtap="openManage">活动管理</button>
-  </view>
-  <view class="closed">我的报名、退款与其他管理功能尚未开放</view>
+  <block wx:else>
+    <view wx:if="{{!identity.canBrowse || !identity.hasProfile}}" class="card">
+      <view class="subtitle">建立你的职业档案</view>
+      <view class="muted">完善背景与探索方向后，未界才能推荐更相关的活动、资源与连接机会。</view>
+      <button class="primary" bindtap="openOnboarding">开始填写</button>
+    </view>
+    <block wx:else>
+      <view class="card">
+        <view class="subtitle">{{identity.profile.displayName}}的职业档案</view>
+        <view class="field"><text class="label">当前阶段</text>{{stageLabel}}</view>
+        <view class="field"><text class="label">学校或单位</text>{{identity.profile.organization}}</view>
+        <view class="field"><text class="label">专业或岗位方向</text>{{identity.profile.specialty}}</view>
+        <view class="field"><text class="label">所在城市</text>{{identity.profile.city}}</view>
+        <view class="field"><text class="label">感兴趣方向</text>{{directionLabels}}</view>
+        <button class="secondary" bindtap="openOnboarding">编辑职业档案</button>
+      </view>
+      <view class="card"><view class="subtitle">我的参与</view><button class="secondary" bindtap="openRegistrations">我的报名</button><view class="muted">收藏与连接申请将在下一阶段接入。</view></view>
+      <view class="card"><view class="subtitle">机会接收偏好</view><view class="muted">{{identity.opportunityOptIn ? '已同意接收相关活动与机会通知。' : '目前未订阅相关活动与机会通知。'}}</view></view>
+    </block>
+    <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button></view>
+    <view class="closed">账号身份由服务端验证；管理员权限仅由运营方受控授予。</view>
+  </block>
 </view>

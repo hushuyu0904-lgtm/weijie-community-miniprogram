@@ -1,0 +1,32 @@
+<view class="page onboarding-page">
+  <view class="eyebrow">WELCOME TO WEIJIE</view>
+  <view class="title">先认识一下你</view>
+  <view class="intro">用不到一分钟完善职业档案。未界会据此推荐更相关的活动、资源与连接机会；你的资料不会向其他用户公开。</view>
+  <view class="card">
+    <view class="subtitle">你的基本背景</view>
+    <label class="label">怎么称呼你 *</label><input value="{{form.displayName}}" data-field="displayName" bindinput="inputField" maxlength="30" placeholder="例如：小余" />
+    <label class="label">当前阶段 *</label>
+    <picker mode="selector" range="{{stageOptions}}" range-key="label" value="{{stageIndex}}" bindchange="selectStage"><view class="picker">{{stageOptions[stageIndex].label}} <text>›</text></view></picker>
+    <label class="label">学校或单位 *</label><input value="{{form.organization}}" data-field="organization" bindinput="inputField" maxlength="100" placeholder="例如：复旦大学 / 某医院 / 某公司" />
+    <label class="label">专业或当前岗位方向 *</label><input value="{{form.specialty}}" data-field="specialty" bindinput="inputField" maxlength="80" placeholder="例如：临床医学 / 医学编辑" />
+    <label class="label">所在城市 *</label><input value="{{form.city}}" data-field="city" bindinput="inputField" maxlength="40" placeholder="例如：上海" />
+  </view>
+  <view class="card">
+    <view class="subtitle">你正在探索什么？</view>
+    <view class="label">感兴趣方向 *（最多选 5 个）</view>
+    <checkbox-group bindchange="selectDirections"><label wx:for="{{directionOptions}}" wx:key="value" class="chip {{item.checked ? 'chip-selected' : ''}}"><checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}</label></checkbox-group>
+    <label class="label">当前最希望解决的问题 *</label>
+    <picker mode="selector" range="{{needOptions}}" range-key="label" value="{{needIndex}}" bindchange="selectNeed"><view class="picker">{{needOptions[needIndex].label}} <text>›</text></view></picker>
+    <label class="label">已有经历（选填）</label><textarea value="{{form.experience}}" data-field="experience" bindinput="inputField" maxlength="1000" placeholder="可简单写实习、项目或转行经历；也可以以后再补充。" />
+    <label class="share-row"><switch checked="{{form.shareExperience}}" bindchange="toggleShare" color="#187552" /><view><view>我愿意在未来分享自己的经历</view><view class="muted">不会自动公开，任何连接均需双方确认。</view></view></label>
+  </view>
+  <view class="card consent-card">
+    <checkbox-group bindchange="changeConsent">
+      <label class="consent-row"><checkbox value="privacy" checked="{{consents.privacyAccepted}}" />我已阅读并同意内测隐私说明 *</label>
+      <label class="consent-row"><checkbox value="opportunity" checked="{{consents.opportunityOptIn}}" />我愿意接收与我的方向相关的活动和机会通知（可随时关闭）</label>
+    </checkbox-group>
+    <button class="text-button" bindtap="showPrivacy">查看本次内测的数据说明</button>
+  </view>
+  <view wx:if="{{error}}" class="notice">{{error}}</view>
+  <button class="primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">保存并进入未界</button>
+</view>
