@@ -32,6 +32,17 @@ Page({
   openRegistrations() {
     wx.navigateTo({ url: '/pages/my-registrations/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
   },
+  openConnections() {
+    wx.navigateTo({ url: '/pages/my-connections/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openResourceManage() {
+    if (!this.data.identity || this.data.identity.role !== 'admin') return;
+    wx.navigateTo({ url: '/pages/resource-manage/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openConnectionManage() {
+    if (!this.data.identity || this.data.identity.role !== 'admin') return;
+    wx.navigateTo({ url: '/pages/connection-manage/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
   openManage() {
     if (!this.data.identity || this.data.identity.role !== 'admin') return;
     wx.navigateTo({ url: '/pages/activity-manage/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });

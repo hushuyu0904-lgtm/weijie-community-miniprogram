@@ -7,6 +7,7 @@
     <label for="title" class="label">活动标题（必填，最多 120 字）</label><input id="title" value="{{form.title}}" data-field="title" bindinput="inputField" maxlength="120" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="description" class="label">活动说明（必填，最多 5000 字）</label><textarea id="description" value="{{form.description}}" data-field="description" bindinput="inputField" maxlength="5000" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="location" class="label">地点（必填）</label><input id="location" value="{{form.location}}" data-field="location" bindinput="inputField" maxlength="200" disabled="{{busy || activityStatus === 'published'}}" />
+    <view class="label">活动类型</view><view class="choice-row"><button wx:for="{{categories}}" wx:key="id" class="choice {{form.category === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="selectCategory" disabled="{{busy || activityStatus === 'published'}}">{{item.label}}</button></view>
     <label for="price" class="label">费用</label><input id="price" value="{{form.priceYuan}}" data-field="priceYuan" maxlength="16" disabled="{{true}}" />
     <view class="muted">首发阶段仅支持免费活动；收费活动、支付和退款将在另行完成规则与资质后再开放。</view>
     <label for="capacity" class="label">人数上限（正整数）</label><input id="capacity" type="number" value="{{form.capacity}}" data-field="capacity" bindinput="inputField" maxlength="16" disabled="{{busy || activityStatus === 'published'}}" />

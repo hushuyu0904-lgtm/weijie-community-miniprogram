@@ -1,5 +1,6 @@
 const cloud = require('../../services/cloud');
-const emptyForm = { title: '', description: '', location: '', priceYuan: '', capacity: '', startAt: '', endAt: '', deadlineAt: '', refundPolicy: '' };
+const emptyForm = { title: '', description: '', location: '', category: 'coffee', priceYuan: '', capacity: '', startAt: '', endAt: '', deadlineAt: '', refundPolicy: '' };
+const categories = [{ id: 'coffee', label: '线下 Coffee Chat' }, { id: 'outing', label: '出去玩' }, { id: 'lecture', label: '线上讲座' }, { id: 'chat', label: '线上聊天室' }, { id: 'other', label: '其他活动' }];
 function timeText(value) { return new Date(value + 28800000).toISOString().slice(0, 16).replace('T', ' '); }
 function parseTime(value) {
   if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(value)) throw new Error('时间请填写 YYYY-MM-DD HH:mm（北京时间）');
@@ -8,7 +9,7 @@ function parseTime(value) {
   return result;
 }
 Page({
-  data: { status: 'loading', form: emptyForm, version: 0, activityStatus: 'draft', busy: false, dirty: false, error: '', message: '' },
+  data: { status: 'loading', form: emptyForm, categories, version: 0, activityStatus: 'draft', busy: false, dirty: false, error: '', message: '' },
   onLoad(options) {
     this._active = true;
     this._existing = !!(options && options.id);
@@ -32,7 +33,7 @@ Page({
   },
   applyActivity(activity) {
     const form = {
-      title: activity.title, description: activity.description, location: activity.location,
+      title: activity.title, description: activity.description, location: activity.location, category: activity.category || 'other',
       priceYuan: (activity.priceFen / 100).toFixed(2), capacity: String(activity.capacity),
       startAt: timeText(activity.startAt), endAt: timeText(activity.endAt), deadlineAt: timeText(activity.deadlineAt), refundPolicy: activity.refundPolicy
     };
@@ -45,6 +46,11 @@ Page({
     this.setData({ form: Object.assign({}, this.data.form, { [field]: event.detail.value }), dirty: true, message: '' });
     if (wx.enableAlertBeforeUnload) wx.enableAlertBeforeUnload({ message: '活动尚未保存，离开将丢失修改' });
   },
+  selectCategory(event) {
+    const category = event.currentTarget.dataset.id;
+    if (!categories.some(item => item.id === category) || this.data.busy || this.data.activityStatus !== 'draft') return;
+    this.setData({ form: Object.assign({}, this.data.form, { category }), dirty: true, message: '' });
+  },
   collectActivity() {
     const form = this.data.form;
     if (!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(form.priceYuan)) throw new Error('费用请填写非负金额，最多两位小数');
@@ -53,7 +59,7 @@ Page({
     const priceFen = Number(parts[0]) * 100 + Number(((parts[1] || '') + '00').slice(0, 2));
     const capacity = Number(form.capacity);
     if (!Number.isSafeInteger(priceFen) || !Number.isSafeInteger(capacity)) throw new Error('金额或人数超过可处理范围');
-    return { title: form.title, description: form.description, location: form.location, refundPolicy: form.refundPolicy,
+    return { title: form.title, description: form.description, location: form.location, category: form.category, refundPolicy: form.refundPolicy,
       priceFen, capacity, startAt: parseTime(form.startAt), endAt: parseTime(form.endAt), deadlineAt: parseTime(form.deadlineAt) };
   },
   async saveDraft() {

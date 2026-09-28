@@ -9,7 +9,12 @@
     "pages/my-registrations/index",
     "pages/activity-registrations/index",
     "pages/activity-manage/index",
-    "pages/activity-edit/index"
+    "pages/activity-edit/index",
+    "pages/resource-detail/index",
+    "pages/resource-manage/index",
+    "pages/resource-edit/index",
+    "pages/my-connections/index",
+    "pages/connection-manage/index"
   ],
   "window": {
     "navigationBarTitleText": "未界",

@@ -1,0 +1,3 @@
+const cloud=require('../../services/cloud');
+const statusLabel={submitted:'已提交，等待运营处理',reviewing:'运营正在审核与撮合',closed:'本次申请已结束'};
+Page({data:{status:'loading',items:[],error:'',statusLabel},onLoad(){this._active=true;return this.load();},onShow(){this._active=true;return this.load();},onUnload(){this._active=false;},async load(){this.setData({status:'loading',error:''});try{const items=await cloud.call('listMyConnectionRequests',{offset:0});if(this._active)this.setData({status:items.length?'ready':'empty',items});}catch(error){if(this._active)this.setData({status:'error',error:error.message});}},revise(){wx.switchTab({url:'/pages/community/index'});}});

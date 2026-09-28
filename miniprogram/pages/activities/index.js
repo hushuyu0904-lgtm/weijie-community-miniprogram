@@ -12,10 +12,8 @@ Page({
   selectCategory(event) {
     const category = event.currentTarget.dataset.id;
     if (category !== 'all' && !this.data.categories.some(item => item.id === category)) return;
-    if (category !== 'all' && !this.data.items.some(item => item.isDemo)) {
-      wx.showToast({ title: '活动分类待后端接入', icon: 'none' }); return;
-    }
-    this.setData({ category });
+    if (category === this.data.category) return;
+    this.setData({ category }); this.loadActivities();
   },
   onLoad() {
     this._active = true;
@@ -35,9 +33,9 @@ Page({
   onUnload() { this._active = false; },
   async loadActivities() {
     const request = this._request = (this._request || 0) + 1;
-    this.setData({ status: 'loading', items: [], error: '', moreError: '', loadingMore: false, hasMore: false, category: 'all' });
+    this.setData({ status: 'loading', items: [], error: '', moreError: '', loadingMore: false, hasMore: false });
     try {
-      const items = await activities.listActivities();
+      const items = await activities.listActivities(0, this.data.category);
       if (this._active && request === this._request) {
         this.setData({ items, status: items.length ? 'ready' : 'empty', hasMore: items.length === 20 });
       }
@@ -50,7 +48,7 @@ Page({
     const request = this._request;
     this.setData({ loadingMore: true, moreError: '' });
     try {
-      const items = await activities.listActivities(this.data.items.length);
+      const items = await activities.listActivities(this.data.items.length, this.data.category);
       if (this._active && request === this._request) this.setData({ items: this.data.items.concat(items), hasMore: items.length === 20 });
     } catch (error) {
       if (this._active && request === this._request) {

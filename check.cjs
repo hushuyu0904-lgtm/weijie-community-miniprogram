@@ -124,12 +124,11 @@ async function main() {
     await p.loadActivities();
     assert.equal(p.data.status, 'ready');
   });
-  await check('categories filter demos only and do not hide unclassified cloud records', () => {
-    const { instance: p, navigation } = page('activities');
+  await check('categories request a real filtered list and preserve the selected category', () => {
+    const { instance: p } = page('activities');
     p.data.items = [{ id: 'a-example-1', isDemo: false }];
     p.selectCategory({ currentTarget: { dataset: { id: 'coffee' } } });
-    assert.equal(p.data.category, 'all');
-    assert.equal(navigation[0].method, 'showToast');
+    assert.equal(p.data.category, 'coffee');
     p.data.items = [{ id: 'demo', isDemo: true }];
     p.selectCategory({ currentTarget: { dataset: { id: 'lecture' } } });
     assert.equal(p.data.category, 'lecture');
@@ -207,15 +206,14 @@ async function main() {
       assert.equal(p.data.status, 'loading');
     }
   });
-  await check('resource and connection previews preserve unavailable states without identity grant', () => {
+  await check('resource and connection pages only use the cloud service and keep tab state', () => {
     for (const name of ['jobs', 'community']) {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
-      assert.match(markup, /尚未开放|暂未开放/);
+      assert.match(markup, name === 'jobs' ? /资源加载中/ : /人工审核/);
       const script=read(path.join(mp, 'pages', name, 'index.js'));
       assert(!/wx\.(request|uploadFile|setStorage|cloud)/.test(script));
       const { instance, definition, navigation } = page(name);
       assert(!('role' in instance.data));
-      if (name === 'jobs') { instance.onCoverError(); assert.equal(instance.data.coverFailed, true); }
       const updates=[];instance.getTabBar=()=>({setData: value=>updates.push(value)});
       instance.onShow();
       assert.equal(updates[0].selected, name === 'jobs' ? 1 : 2);

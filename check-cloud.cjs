@@ -9,7 +9,7 @@ const read = file => fs.readFileSync(path.join(__dirname, file), 'utf8').replace
 const copy = value => JSON.parse(JSON.stringify(value));
 const APPID = 'wx-test-only';
 const memberKey = openid => crypto.createHash('sha256').update(APPID + ':' + openid).digest('hex');
-const records = { members: new Map(), activities: new Map(), registrations: new Map(), connectionRequests: new Map() };
+const records = { members: new Map(), activities: new Map(), registrations: new Map(), connectionRequests: new Map(), resources: new Map() };
 const context = { APPID, OPENID: 'admin' };
 const env = { WECHAT_APPID: APPID };
 let databaseFailure = false;
@@ -60,7 +60,7 @@ const call = (action, extra = {}) => run(Object.assign({ action }, extra));
 const actAs = name => { context.OPENID = name; context.APPID = APPID; };
 function register(name, role, active = true) { records.members.set(memberKey(name), { _id: memberKey(name), role, active }); }
 function activity() {
-  return { title: '测试活动', description: '测试说明', location: '线上', priceFen: 0, capacity: 30,
+  return { title: '测试活动', description: '测试说明', location: '线上', category: 'coffee', priceFen: 0, capacity: 30,
     startAt: Date.now() + 7200000, endAt: Date.now() + 10800000, deadlineAt: Date.now() + 3600000, refundPolicy: '待确认' };
 }
 function profile() {
@@ -120,10 +120,13 @@ async function main() {
       denied(await draft('a-test-draft-001'), 'FORBIDDEN');
     }
     actAs('member');
-    for (const action of ['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations']) {
+    for (const action of ['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations', 'listManagedResources', 'getManagedResource', 'saveResourceDraft', 'publishResource']) {
       const payload = action === 'saveDraft' ? { id: 'a-test-draft-001', version: 0, activity: activity() } :
         action === 'publishActivity' ? { id: 'a-test-draft-001', version: 1 } :
         action === 'getManagedActivity' ? { id: 'a-test-draft-001' } :
+        action === 'saveResourceDraft' ? { id: 's-test-resource-001', version: 0, resource: resource() } :
+        action === 'publishResource' ? { id: 's-test-resource-001', version: 1 } :
+        action === 'getManagedResource' ? { id: 's-test-resource-001' } :
         action === 'listActivityRegistrations' ? { id: 'a-test-draft-001', offset: 0 } : {};
       denied(await call(action, payload), 'FORBIDDEN');
     }
@@ -210,6 +213,25 @@ async function main() {
     actAs('member');
     assert.equal(ok(await call('listMyConnectionRequests', { offset: 0 }))[0].operatorNote, '将在下一批 Coffee Chat 前联系。');
     actAs('visitor'); denied(await call('createConnectionRequest', { request: connectionRequest() }), 'FORBIDDEN');
+  });
+  await check('admin publishes resources by category and members only read published resources', async () => {
+    actAs('admin');
+    const input = resource();
+    const saved = ok(await call('saveResourceDraft', { id: 's-test-resource-001', version: 0, resource: input }));
+    assert.equal(saved.status, 'draft');
+    actAs('member');
+    assert.equal(ok(await call('listResources', { offset: 0, category: 'knowledge' })).length, 0);
+    assert.equal(ok(await call('getResource', { id: saved.id })), null);
+    actAs('admin');
+    ok(await call('publishResource', { id: saved.id, version: 1 }));
+    actAs('member');
+    const list = ok(await call('listResources', { offset: 0, category: 'knowledge' }));
+    assert.equal(list.length, 1); assert.equal(list[0].title, input.title); assert(!('createdBy' in list[0]));
+    denied(await call('listResources', { offset: 0, category: 'bad' }), 'INVALID_ARGUMENT');
+    actAs('admin');
+    denied(await call('saveResourceDraft', { id: 's-test-resource-002', version: 0, resource: Object.assign(resource(), { sourceUrl: 'http://bad.example' }) }), 'INVALID_ARGUMENT');
+    ok(await call('saveResourceDraft', { id: 's-test-resource-003', version: 0, resource: Object.assign(resource(), { content: '', sourceUrl: '' }) }));
+    denied(await call('publishResource', { id: 's-test-resource-003', version: 1 }), 'INVALID_ARGUMENT');
   });
   await check('stale edit conflict, expired publication rejection and concurrent edits', async () => {
     actAs('admin');
@@ -322,4 +344,5 @@ async function main() {
   });
   console.log(count + ' groups passed: local SDK/database substitutes only; deployed identity and database rules NOT verified.');
 }
+function resource() { return { title: '测试资源', summary: '测试资源简介', category: 'knowledge', content: '测试正文', sourceLabel: '', sourceUrl: '' }; }
 main().catch(error => { console.error(error); process.exitCode = 1; });

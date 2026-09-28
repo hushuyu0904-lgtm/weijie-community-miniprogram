@@ -2,7 +2,10 @@ const cloud = require('wx-server-sdk');
 const crypto = require('node:crypto');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
-const FIELDS = ['title', 'description', 'location', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy'];
+const FIELDS = ['title', 'description', 'location', 'category', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy'];
+const ACTIVITY_CATEGORIES = ['coffee', 'outing', 'lecture', 'chat', 'other'];
+const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl'];
+const RESOURCE_CATEGORIES = ['opportunity', 'news', 'knowledge', 'recap'];
 const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeed', 'experience', 'shareExperience'];
 const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
 const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'other'];
@@ -76,6 +79,8 @@ function activityInput(value, publishing) {
     }
     result[field] = value[field].trim();
   }
+  if (!ACTIVITY_CATEGORIES.includes(value.category)) fail('INVALID_ARGUMENT', '请选择活动类型');
+  result.category = value.category;
   if (!Number.isSafeInteger(value.priceFen) || value.priceFen < 0) fail('INVALID_ARGUMENT', '金额必须为非负整数分');
   if (!Number.isSafeInteger(value.capacity) || value.capacity < 1) fail('INVALID_ARGUMENT', '容量必须为正整数');
   result.priceFen = value.priceFen;
@@ -94,8 +99,29 @@ function activityInput(value, publishing) {
   return result;
 }
 
+function resourceInput(value, publishing) {
+  fieldsOnly(value, RESOURCE_FIELDS);
+  if (!RESOURCE_CATEGORIES.includes(value.category)) fail('INVALID_ARGUMENT', '请选择资源分类');
+  const result = {
+    title: textField(value.title, '资源标题', 120),
+    summary: textField(value.summary, '资源简介', 1200),
+    category: value.category,
+    content: textField(value.content, '资源正文', 8000, false),
+    sourceLabel: textField(value.sourceLabel, '来源说明', 160, false),
+    sourceUrl: textField(value.sourceUrl, '来源链接', 2000, false)
+  };
+  if (result.sourceUrl && !/^https:\/\//.test(result.sourceUrl)) fail('INVALID_ARGUMENT', '来源链接须以 https:// 开头');
+  if (publishing && !result.content && !result.sourceUrl) fail('INVALID_ARGUMENT', '发布资源请提供正文或来源链接');
+  return result;
+}
+
 function validId(id) {
   if (typeof id !== 'string' || !/^a-[a-z0-9-]{8,60}$/.test(id)) fail('INVALID_ARGUMENT', '活动编号无效');
+  return id;
+}
+
+function validResourceId(id) {
+  if (typeof id !== 'string' || !/^s-[a-z0-9-]{8,60}$/.test(id)) fail('INVALID_ARGUMENT', '资源编号无效');
   return id;
 }
 
@@ -114,6 +140,61 @@ function visibleActivity(item) {
     registrationCount: Number.isSafeInteger(item.registrationCount) && item.registrationCount >= 0 ? item.registrationCount : 0 };
   for (const field of FIELDS) result[field] = item[field];
   return result; // 不向成员返回创建者身份、成员记录或内部数据库字段。
+}
+
+function visibleResource(item) {
+  const result = { id: item._id, status: item.status, version: item.version };
+  for (const field of RESOURCE_FIELDS) result[field] = item[field];
+  return result;
+}
+
+async function findResource(id) {
+  const result = await db.collection('resources').where({ _id: id }).limit(1).get();
+  return result.data[0] || null;
+}
+
+async function saveResourceDraft(event, actor) {
+  const id = validResourceId(event.id);
+  const version = expectedVersion(event.version);
+  const input = resourceInput(event.resource, false);
+  const collection = db.collection('resources');
+  const existing = await findResource(id);
+  if (!existing) {
+    if (version !== 0) fail('CONFLICT', '资源草稿不存在，请返回资源管理核实');
+    const record = Object.assign({}, input, { _id: id, status: 'draft', version: 1, createdBy: actor, createdAt: Date.now(), updatedAt: Date.now() });
+    try {
+      await collection.add({ data: record });
+      return visibleResource(record);
+    } catch (error) {
+      const saved = await findResource(id);
+      if (saved && saved.createdBy === actor && saved.status === 'draft' && saved.version === 1 && RESOURCE_FIELDS.every(key => saved[key] === input[key])) return visibleResource(saved);
+      if (saved) fail('CONFLICT', '资源编号已存在，请返回资源管理核实');
+      throw error;
+    }
+  }
+  if (existing.status !== 'draft') fail('CONFLICT', '已发布资源本阶段只读');
+  if (existing.version === version + 1 && RESOURCE_FIELDS.every(key => existing[key] === input[key])) return visibleResource(existing);
+  if (existing.version !== version) fail('CONFLICT', '资源已被更新，请返回管理列表重新打开');
+  const changes = Object.assign({}, input, { version: version + 1, updatedAt: Date.now() });
+  const result = await collection.where({ _id: id, status: 'draft', version }).update({ data: changes });
+  if (result.stats.updated !== 1) fail('CONFLICT', '资源状态已变化，请返回管理列表核实');
+  return visibleResource(Object.assign({}, existing, changes));
+}
+
+async function publishResource(event) {
+  const id = validResourceId(event.id);
+  const version = expectedVersion(event.version);
+  const existing = await findResource(id);
+  if (!existing) fail('NOT_FOUND', '资源不存在');
+  if (existing.status === 'published') return visibleResource(existing);
+  if (existing.status !== 'draft' || existing.version !== version) fail('CONFLICT', '资源状态已变化，请重新打开');
+  const input = {};
+  for (const field of RESOURCE_FIELDS) input[field] = existing[field];
+  resourceInput(input, true);
+  const changes = { status: 'published', version: version + 1, publishedAt: Date.now(), updatedAt: Date.now() };
+  const result = await db.collection('resources').where({ _id: id, status: 'draft', version }).update({ data: changes });
+  if (result.stats.updated !== 1) fail('CONFLICT', '资源状态已变化，请核实发布结果');
+  return visibleResource(Object.assign({}, existing, changes));
 }
 
 function registrationId(activityId, memberKey) {
@@ -372,12 +453,15 @@ exports.main = async event => {
     const action = event && event.action;
     const allowed = {
       identity: [], completeOnboarding: ['profile', 'consents'], updateProfile: ['profile', 'consents'],
-      listActivities: ['offset'], getActivity: ['id'],
+      listActivities: ['offset', 'category'], getActivity: ['id'],
       registerActivity: ['id'], listMyRegistrations: ['offset'], listActivityRegistrations: ['id', 'offset'],
       createConnectionRequest: ['request'], listMyConnectionRequests: ['offset'],
       listConnectionRequests: ['offset'], reviewConnectionRequest: ['id', 'status', 'operatorNote'],
       listManagedActivities: ['offset'], getManagedActivity: ['id'],
-      saveDraft: ['id', 'version', 'activity'], publishActivity: ['id', 'version']
+      saveDraft: ['id', 'version', 'activity'], publishActivity: ['id', 'version'],
+      listResources: ['offset', 'category'], getResource: ['id'],
+      listManagedResources: ['offset'], getManagedResource: ['id'],
+      saveResourceDraft: ['id', 'version', 'resource'], publishResource: ['id', 'version']
     };
     if (!Object.prototype.hasOwnProperty.call(allowed, action)) fail('INVALID_ARGUMENT', '不支持的操作');
     // 小程序云函数可能在 event 顶层注入身份元数据。它们只为兼容平台而放行，
@@ -407,10 +491,13 @@ exports.main = async event => {
     }
     requireMember(member);
     if (['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations',
-      'listConnectionRequests', 'reviewConnectionRequest'].includes(action)) requireAdmin(member);
+      'listConnectionRequests', 'reviewConnectionRequest', 'listManagedResources', 'getManagedResource',
+      'saveResourceDraft', 'publishResource'].includes(action)) requireAdmin(member);
     let data;
     if (action === 'saveDraft') data = await saveDraft(event, memberKey);
     else if (action === 'publishActivity') data = await publishActivity(event);
+    else if (action === 'saveResourceDraft') data = await saveResourceDraft(event, memberKey);
+    else if (action === 'publishResource') data = await publishResource(event);
     else if (action === 'registerActivity') data = await registerActivity(event, memberKey, member);
     else if (action === 'createConnectionRequest') data = await saveConnectionRequest(memberKey, member, connectionRequestInput(event.request));
     else if (action === 'reviewConnectionRequest') data = await reviewConnectionRequest(event);
@@ -429,12 +516,32 @@ exports.main = async event => {
         const registration = await findRegistration(item._id, memberKey);
         data.myRegistration = registration ? visibleRegistration(registration) : null;
       }
+    } else if (action === 'getResource' || action === 'getManagedResource') {
+      const item = await findResource(validResourceId(event.id));
+      data = item && (action === 'getManagedResource' || item.status === 'published') ? visibleResource(item) : null;
     } else {
       const offset = event.offset === undefined ? 0 : event.offset;
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10000) fail('INVALID_ARGUMENT', '分页参数无效');
-      const query = action === 'listActivities' ? { status: 'published' } : {};
-      const result = await db.collection('activities').where(query).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
-      data = result.data.map(visibleActivity);
+      if (action === 'listActivities') {
+        const query = { status: 'published' };
+        if (event.category !== undefined) {
+          if (!ACTIVITY_CATEGORIES.includes(event.category)) fail('INVALID_ARGUMENT', '活动分类无效');
+          query.category = event.category;
+        }
+        const result = await db.collection('activities').where(query).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
+        data = result.data.map(visibleActivity);
+      } else if (action === 'listResources') {
+        const query = { status: 'published' };
+        if (event.category !== undefined) {
+          if (!RESOURCE_CATEGORIES.includes(event.category)) fail('INVALID_ARGUMENT', '资源分类无效');
+          query.category = event.category;
+        }
+        const result = await db.collection('resources').where(query).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
+        data = result.data.map(visibleResource);
+      } else {
+        const result = await db.collection(action === 'listManagedResources' ? 'resources' : 'activities').where({}).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
+        data = result.data.map(action === 'listManagedResources' ? visibleResource : visibleActivity);
+      }
     }
     return { ok: true, data };
   } catch (error) {

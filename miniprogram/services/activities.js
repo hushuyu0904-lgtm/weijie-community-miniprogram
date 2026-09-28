@@ -19,8 +19,10 @@ function forDisplay(activity) {
   });
 }
 
-async function listActivities(offset = 0) {
-  const items = isDemo ? (await demo.listActivities()).slice(offset, offset + 20) : await cloud.call('listActivities', { offset });
+async function listActivities(offset = 0, category) {
+  const payload = { offset };
+  if (category && category !== 'all') payload.category = category;
+  const items = isDemo ? (await demo.listActivities()).filter(item => !category || category === 'all' || (item.id === 'demo-medical-ai' ? 'lecture' : 'coffee') === category).slice(offset, offset + 20) : await cloud.call('listActivities', payload);
   return items.map(forDisplay);
 }
 

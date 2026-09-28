@@ -21,13 +21,13 @@ assert.match(config, /envId:\s*''/);
 assert(!/wx[a-z0-9]{16,}/i.test(config), 'config.js must not contain a checked-in AppID');
 assert.match(backend, /cloud\.getWXContext\(\)/);
 assert.match(backend, /process\.env\.WECHAT_APPID/);
-assert(!/callContainer|https?:\/\//.test(backend), 'v0.1 backend must not add an HTTP service dependency');
+assert(!/callContainer|require\(['\"]https?['\"]\)/.test(backend), 'v0.1 backend must not add an HTTP service dependency');
 
-for (const name of ['members', 'activities', 'registrations', 'connectionRequests']) {
+for (const name of ['members', 'activities', 'registrations', 'connectionRequests', 'resources']) {
   assert.match(schema, new RegExp('## ' + name));
   assert.match(runbook, new RegExp(name));
 }
-for (const action of ['completeOnboarding', 'registerActivity', 'listActivityRegistrations', 'createConnectionRequest', 'reviewConnectionRequest']) {
+for (const action of ['completeOnboarding', 'registerActivity', 'listActivityRegistrations', 'createConnectionRequest', 'reviewConnectionRequest', 'listResources', 'publishResource']) {
   assert.match(backend, new RegExp(action));
   assert.match(handoff, new RegExp(action));
 }

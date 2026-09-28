@@ -29,6 +29,7 @@
 | `status` | `draft` / `published` | 草稿隔离与成员可见性 |
 | `version` | number | 乐观并发控制 |
 | `title`、`description`、`location`、`refundPolicy` | string | 活动说明 |
+| `category` | `coffee` / `outing` / `lecture` / `chat` / `other` | 列表分类 |
 | `priceFen` | number | v0.1 固定为 0 |
 | `capacity`、`registrationCount` | number | 容量与已确认人数 |
 | `startAt`、`endAt`、`deadlineAt` | number | 毫秒时间戳 |
@@ -73,6 +74,23 @@
 索引：`memberKey` 升序、`updatedAt` 降序；另建 `updatedAt` 降序供管理员审核列表使用。
 
 当前云函数已提供创建、查看本人、管理员列表与审核状态接口；前端仍是本地填写样板，待活动闭环真实验收后再接入。真正介绍双方前，仍需要运营确认和双方同意，不能仅凭 `reviewing` 状态公开联系方式。
+
+## resources
+
+运营发布、成员浏览的轻量资源库。它不是企业招聘库，也不收录成员简历、联系方式或可被企业检索的人才标签。资源可提供正文、HTTPS 来源链接，或两者同时提供；外部链接在小程序中只提供复制，不直接收集第三方数据。
+
+| 字段 | 类型 | 用途 |
+| --- | --- | --- |
+| `_id` | string (`s-…`) | 管理端生成、服务端校验的资源编号 |
+| `status` | `draft` / `published` | 草稿隔离与成员可见性 |
+| `version` | number | 乐观并发控制 |
+| `title`、`summary`、`content` | string | 标题、简介与可选正文 |
+| `category` | `opportunity` / `news` / `knowledge` / `recap` | 资源分类 |
+| `sourceLabel`、`sourceUrl` | string | 可选来源说明与 HTTPS 链接 |
+| `createdBy` | string | 仅服务端内部追溯，不返回成员端 |
+| `createdAt`、`updatedAt`、`publishedAt` | number | 生命周期时间戳 |
+
+索引：`status` 升序、`category` 升序、`createdAt` 降序、`_id` 降序；另建 `createdAt` 降序、`_id` 降序供管理员管理列表使用。
 
 ## 管理员受控操作
 

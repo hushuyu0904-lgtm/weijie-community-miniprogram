@@ -17,10 +17,10 @@
         <view class="field"><text class="label">感兴趣方向</text>{{directionLabels}}</view>
         <button class="secondary" bindtap="openOnboarding">编辑职业档案</button>
       </view>
-      <view class="card"><view class="subtitle">我的参与</view><button class="secondary" bindtap="openRegistrations">我的报名</button><view class="muted">收藏与连接申请将在下一阶段接入。</view></view>
+      <view class="card"><view class="subtitle">我的参与</view><button class="secondary" bindtap="openRegistrations">我的报名</button><button class="secondary" bindtap="openConnections">我的连接申请</button><view class="muted">连接申请由运营人工审核与撮合，不公开联系方式。</view></view>
       <view class="card"><view class="subtitle">机会接收偏好</view><view class="muted">{{identity.opportunityOptIn ? '已同意接收相关活动与机会通知。' : '目前未订阅相关活动与机会通知。'}}</view></view>
     </block>
-    <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button></view>
+    <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button><button class="secondary" bindtap="openResourceManage">资源管理</button><button class="secondary" bindtap="openConnectionManage">连接申请管理</button></view>
     <view class="closed">账号身份由服务端验证；管理员权限仅由运营方受控授予。</view>
   </block>
 </view>
