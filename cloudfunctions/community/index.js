@@ -380,8 +380,9 @@ exports.main = async event => {
       saveDraft: ['id', 'version', 'activity'], publishActivity: ['id', 'version']
     };
     if (!Object.prototype.hasOwnProperty.call(allowed, action)) fail('INVALID_ARGUMENT', '不支持的操作');
-    // userInfo 可能由平台附加，但绝不用于身份或角色判断。
-    fieldsOnly(event, ['action', 'userInfo'].concat(allowed[action]));
+    // 小程序云函数可能在 event 顶层注入身份元数据。它们只为兼容平台而放行，
+    // 身份与角色始终只取 getWXContext() 和 members，绝不读取这些前端可伪造字段。
+    fieldsOnly(event, ['action', 'userInfo', 'OPENID', 'APPID', 'UNIONID'].concat(allowed[action]));
     if (action === 'identity') return { ok: true, data: {
       memberKey,
       role: active ? member.role : 'visitor',
