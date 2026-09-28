@@ -1,6 +1,6 @@
 # v0.1 数据库 Schema
 
-本项目使用 CloudBase 文档数据库。所有客户端对三个集合均为 `read: false`、`write: false`；只有 `community` 云函数和控制台可访问。规则文件见 [deny-client.rules.json](deny-client.rules.json)。
+本项目使用 CloudBase 文档数据库。所有客户端对所有集合均为 `read: false`、`write: false`；只有 `community` 云函数和控制台可访问。规则文件见 [deny-client.rules.json](deny-client.rules.json)。
 
 这是小程序 v0.1 的最小数据模型，不是未界长期人才库；不导入简历原文、联系方式、微信号、企业端搜索标签或真实社群历史数据。
 
@@ -53,6 +53,26 @@
 索引：`memberKey` 升序、`createdAt` 降序；`activityId` 升序、`createdAt` 升序。
 
 不实现取消报名、自动候补转正或修改名单；这些都需要新的状态机和真实运营规则后再设计。
+
+## connectionRequests
+
+这是“我想寻找相似背景的人聊 20 分钟 / 我愿意分享经历”的私密申请队列，不是用户搜索、即时聊天或自动配对。申请人始终只有自己的一条当前申请；再次提交会更新该申请并重新进入 `submitted`。不保存手机号、微信号、简历或对方联系方式。
+
+| 字段 | 类型 | 用途 |
+| --- | --- | --- |
+| `_id` | string (`c-…`) | 服务端按 memberKey 生成的稳定申请键 |
+| `memberKey` | string | 仅云函数内部关联申请人 |
+| `intent` | `seek` / `share` | 希望交流或愿意分享 |
+| `directions` | string[] | 1 至 5 个职业方向 |
+| `introduction`、`question`、`availability` | string | 申请人的最小必要说明 |
+| `profileSummary` | object | 管理员审核用最小职业摘要 |
+| `status` | `submitted` / `reviewing` / `closed` | 运营审核状态，不等于已经匹配成功 |
+| `operatorNote` | string | 仅申请人和管理员可见的运营备注 |
+| `createdAt`、`updatedAt` | number | 生命周期时间戳 |
+
+索引：`memberKey` 升序、`updatedAt` 降序；另建 `updatedAt` 降序供管理员审核列表使用。
+
+当前云函数已提供创建、查看本人、管理员列表与审核状态接口；前端仍是本地填写样板，待活动闭环真实验收后再接入。真正介绍双方前，仍需要运营确认和双方同意，不能仅凭 `reviewing` 状态公开联系方式。
 
 ## 管理员受控操作
 

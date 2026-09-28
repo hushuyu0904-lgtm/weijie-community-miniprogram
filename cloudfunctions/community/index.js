@@ -7,6 +7,7 @@ const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'ci
 const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
 const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'other'];
 const NEEDS = ['explore', 'opportunities', 'network', 'resume'];
+const CONNECTION_STATUSES = ['submitted', 'reviewing', 'closed'];
 
 function fail(code, message) {
   const error = new Error(message);
@@ -22,6 +23,7 @@ function fieldsOnly(value, allowed) {
 }
 
 function textField(value, name, limit, required = true) {
+  if (!required && value === undefined) return '';
   if (typeof value !== 'string' || value.length > limit || (required && !value.trim())) {
     fail('INVALID_ARGUMENT', name + (required ? '为必填项' : '格式无效'));
   }
@@ -116,6 +118,101 @@ function visibleActivity(item) {
 
 function registrationId(activityId, memberKey) {
   return 'r-' + crypto.createHash('sha256').update(activityId + ':' + memberKey).digest('hex');
+}
+
+function connectionRequestId(memberKey) {
+  return 'c-' + crypto.createHash('sha256').update('connection:' + memberKey).digest('hex');
+}
+
+function validConnectionId(id) {
+  if (typeof id !== 'string' || !/^c-[a-f0-9]{64}$/.test(id)) fail('INVALID_ARGUMENT', '连接申请编号无效');
+  return id;
+}
+
+function connectionRequestInput(value) {
+  fieldsOnly(value, ['intent', 'directions', 'introduction', 'question', 'availability']);
+  if (!['seek', 'share'].includes(value.intent)) fail('INVALID_ARGUMENT', '请选择连接目的');
+  if (!Array.isArray(value.directions) || value.directions.length < 1 || value.directions.length > 5 ||
+      new Set(value.directions).size !== value.directions.length || value.directions.some(item => !DIRECTIONS.includes(item))) {
+    fail('INVALID_ARGUMENT', '请选择 1 至 5 个感兴趣方向');
+  }
+  return {
+    intent: value.intent,
+    directions: value.directions.slice(),
+    introduction: textField(value.introduction, '个人背景与经历', 1500),
+    question: textField(value.question, '希望交流的问题', 1000),
+    availability: textField(value.availability, '可交流时间', 300, false)
+  };
+}
+
+function profileSummary(member) {
+  const profile = member && member.profile || {};
+  return {
+    displayName: typeof profile.displayName === 'string' && profile.displayName || '未填写称呼',
+    stage: typeof profile.stage === 'string' && profile.stage || '',
+    organization: typeof profile.organization === 'string' && profile.organization || '',
+    specialty: typeof profile.specialty === 'string' && profile.specialty || ''
+  };
+}
+
+function visibleMyConnectionRequest(item) {
+  return {
+    id: item._id, status: item.status, intent: item.intent, directions: item.directions.slice(),
+    introduction: item.introduction, question: item.question, availability: item.availability,
+    createdAt: item.createdAt, updatedAt: item.updatedAt,
+    operatorNote: typeof item.operatorNote === 'string' ? item.operatorNote : ''
+  };
+}
+
+function visibleAdminConnectionRequest(item) {
+  return Object.assign(visibleMyConnectionRequest(item), { memberKey: item.memberKey, profileSummary: Object.assign({}, item.profileSummary) });
+}
+
+async function findConnectionRequest(id) {
+  const result = await db.collection('connectionRequests').where({ _id: id }).limit(1).get();
+  return result.data[0] || null;
+}
+
+async function saveConnectionRequest(memberKey, member, input) {
+  const id = connectionRequestId(memberKey);
+  const existing = await findConnectionRequest(id);
+  const now = Date.now();
+  const changes = Object.assign({}, input, { status: 'submitted', operatorNote: '', profileSummary: profileSummary(member), updatedAt: now });
+  if (!existing) {
+    const record = Object.assign({}, changes, { _id: id, memberKey, createdAt: now });
+    try {
+      await db.collection('connectionRequests').add({ data: record });
+      return visibleMyConnectionRequest(record);
+    } catch (error) {
+      const latest = await findConnectionRequest(id);
+      if (!latest) throw error;
+      return visibleMyConnectionRequest(latest);
+    }
+  }
+  if (!CONNECTION_STATUSES.includes(existing.status)) fail('CONFLICT', '连接申请状态异常，请联系运营者');
+  await db.collection('connectionRequests').where({ _id: id }).update({ data: changes });
+  return visibleMyConnectionRequest(Object.assign({}, existing, changes));
+}
+
+async function listMyConnectionRequests(memberKey, offset) {
+  const result = await db.collection('connectionRequests').where({ memberKey }).orderBy('updatedAt', 'desc').skip(offset).limit(20).get();
+  return result.data.map(visibleMyConnectionRequest);
+}
+
+async function listConnectionRequests(offset) {
+  const result = await db.collection('connectionRequests').orderBy('updatedAt', 'desc').skip(offset).limit(20).get();
+  return result.data.map(visibleAdminConnectionRequest);
+}
+
+async function reviewConnectionRequest(event) {
+  const id = validConnectionId(event.id);
+  if (!['reviewing', 'closed'].includes(event.status)) fail('INVALID_ARGUMENT', '连接申请状态无效');
+  const note = textField(event.operatorNote, '运营备注', 500, false);
+  const existing = await findConnectionRequest(id);
+  if (!existing) fail('NOT_FOUND', '连接申请不存在');
+  const changes = { status: event.status, operatorNote: note, updatedAt: Date.now() };
+  await db.collection('connectionRequests').where({ _id: id }).update({ data: changes });
+  return visibleAdminConnectionRequest(Object.assign({}, existing, changes));
 }
 
 function visibleRegistration(item) {
@@ -277,6 +374,8 @@ exports.main = async event => {
       identity: [], completeOnboarding: ['profile', 'consents'], updateProfile: ['profile', 'consents'],
       listActivities: ['offset'], getActivity: ['id'],
       registerActivity: ['id'], listMyRegistrations: ['offset'], listActivityRegistrations: ['id', 'offset'],
+      createConnectionRequest: ['request'], listMyConnectionRequests: ['offset'],
+      listConnectionRequests: ['offset'], reviewConnectionRequest: ['id', 'status', 'operatorNote'],
       listManagedActivities: ['offset'], getManagedActivity: ['id'],
       saveDraft: ['id', 'version', 'activity'], publishActivity: ['id', 'version']
     };
@@ -306,15 +405,21 @@ exports.main = async event => {
       } };
     }
     requireMember(member);
-    if (['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations'].includes(action)) requireAdmin(member);
+    if (['listManagedActivities', 'getManagedActivity', 'saveDraft', 'publishActivity', 'listActivityRegistrations',
+      'listConnectionRequests', 'reviewConnectionRequest'].includes(action)) requireAdmin(member);
     let data;
     if (action === 'saveDraft') data = await saveDraft(event, memberKey);
     else if (action === 'publishActivity') data = await publishActivity(event);
     else if (action === 'registerActivity') data = await registerActivity(event, memberKey, member);
-    else if (action === 'listMyRegistrations' || action === 'listActivityRegistrations') {
+    else if (action === 'createConnectionRequest') data = await saveConnectionRequest(memberKey, member, connectionRequestInput(event.request));
+    else if (action === 'reviewConnectionRequest') data = await reviewConnectionRequest(event);
+    else if (['listMyRegistrations', 'listActivityRegistrations', 'listMyConnectionRequests', 'listConnectionRequests'].includes(action)) {
       const offset = event.offset === undefined ? 0 : event.offset;
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10000) fail('INVALID_ARGUMENT', '分页参数无效');
-      data = action === 'listMyRegistrations' ? await listMyRegistrations(memberKey, offset) : await listActivityRegistrations(validId(event.id), offset);
+      if (action === 'listMyRegistrations') data = await listMyRegistrations(memberKey, offset);
+      else if (action === 'listActivityRegistrations') data = await listActivityRegistrations(validId(event.id), offset);
+      else if (action === 'listMyConnectionRequests') data = await listMyConnectionRequests(memberKey, offset);
+      else data = await listConnectionRequests(offset);
     }
     else if (action === 'getActivity' || action === 'getManagedActivity') {
       const item = await findActivity(validId(event.id));

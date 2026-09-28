@@ -9,7 +9,7 @@ const read = file => fs.readFileSync(path.join(__dirname, file), 'utf8').replace
 const copy = value => JSON.parse(JSON.stringify(value));
 const APPID = 'wx-test-only';
 const memberKey = openid => crypto.createHash('sha256').update(APPID + ':' + openid).digest('hex');
-const records = { members: new Map(), activities: new Map(), registrations: new Map() };
+const records = { members: new Map(), activities: new Map(), registrations: new Map(), connectionRequests: new Map() };
 const context = { APPID, OPENID: 'admin' };
 const env = { WECHAT_APPID: APPID };
 let databaseFailure = false;
@@ -68,6 +68,9 @@ function profile() {
     directions: ['medical-ai', 'pharma'], currentNeed: 'explore', experience: '', shareExperience: false };
 }
 function consents(opportunityOptIn = false) { return { privacyAccepted: true, opportunityOptIn }; }
+function connectionRequest() {
+  return { intent: 'seek', directions: ['medical-ai'], introduction: '临床医学在读，正在探索医疗 AI。', question: '希望了解从医学进入医疗 AI 的第一份实习如何准备。', availability: '工作日晚上' };
+}
 const draft = (id, input = activity(), version = 0) => call('saveDraft', { id, version, activity: input });
 let count = 0;
 async function check(name, fn) { await fn(); count++; console.log('PASS ' + name); }
@@ -186,6 +189,26 @@ async function main() {
     assert.equal(roster.length, 2); assert.deepEqual(roster.map(row => row.status), ['confirmed', 'waitlist']);
     assert(roster.some(row => row.displayName === '小余'));
     actAs('visitor'); denied(await call('registerActivity', { id: 'a-test-registration-001' }), 'FORBIDDEN');
+  });
+  await check('connection requests are private, reviewable by admins and never create a direct match', async () => {
+    actAs('member');
+    const created = ok(await call('createConnectionRequest', { request: connectionRequest() }));
+    assert.equal(created.status, 'submitted'); assert.equal(created.operatorNote, '');
+    assert.equal(records.connectionRequests.size, 1);
+    const edited = ok(await call('createConnectionRequest', { request: Object.assign(connectionRequest(), { question: '想先了解岗位和实习准备。' }) }));
+    assert.equal(edited.id, created.id); assert.equal(records.connectionRequests.size, 1);
+    assert.equal(ok(await call('listMyConnectionRequests', { offset: 0 }))[0].id, created.id);
+    denied(await call('listConnectionRequests', { offset: 0 }), 'FORBIDDEN');
+    denied(await call('createConnectionRequest', { request: Object.assign(connectionRequest(), { phone: '13800000000' }) }), 'INVALID_ARGUMENT');
+    actAs('admin');
+    const adminList = ok(await call('listConnectionRequests', { offset: 0 }));
+    assert.equal(adminList[0].id, created.id); assert.equal(adminList[0].profileSummary.displayName, '未填写称呼');
+    const reviewed = ok(await call('reviewConnectionRequest', { id: created.id, status: 'reviewing', operatorNote: '将在下一批 Coffee Chat 前联系。' }));
+    assert.equal(reviewed.status, 'reviewing');
+    denied(await call('reviewConnectionRequest', { id: created.id, status: 'matched', operatorNote: '' }), 'INVALID_ARGUMENT');
+    actAs('member');
+    assert.equal(ok(await call('listMyConnectionRequests', { offset: 0 }))[0].operatorNote, '将在下一批 Coffee Chat 前联系。');
+    actAs('visitor'); denied(await call('createConnectionRequest', { request: connectionRequest() }), 'FORBIDDEN');
   });
   await check('stale edit conflict, expired publication rejection and concurrent edits', async () => {
     actAs('admin');
