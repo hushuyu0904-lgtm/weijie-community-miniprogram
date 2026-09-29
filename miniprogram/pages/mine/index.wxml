@@ -1,4 +1,4 @@
-<view class="tab-page"><view class="masthead"><view class="kicker">未界 / MY SPACE</view><view class="profile-heading"><view><view class="page-heading">我的</view><view class="deck editorial">在未界，留下自己的故事。</view></view><view class="profile-avatar-wrap"><view class="profile-icon" bindtap="openOnboarding"><image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill"/><text wx:else>{{avatarLetter}}</text></view><button class="avatar-edit-link" bindtap="openOnboarding">编辑头像</button></view></view></view><view class="page-body">
+<view class="tab-page"><view class="masthead"><view class="kicker">未界 / MY SPACE</view><view class="profile-heading"><view><view class="page-heading">我的</view><view class="deck editorial">把你的故事留在这里。</view></view><view class="profile-avatar-wrap"><view class="profile-icon" bindtap="openOnboarding"><image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill"/><text wx:else>{{avatarLetter}}</text></view><button class="avatar-edit-link" bindtap="openOnboarding">编辑头像</button></view></view></view><view class="page-body">
   <view wx:if="{{status === 'loading'}}" class="state">正在验证微信身份…</view>
   <view wx:elif="{{status === 'error'}}" class="card state"><view>{{error}}</view><button class="primary" bindtap="loadIdentity">重试</button></view>
   <block wx:else>
@@ -17,13 +17,11 @@
         <view class="field"><text class="label">感兴趣方向</text>{{directionLabels}}</view>
         <button class="secondary" bindtap="openOnboarding">编辑职业档案</button>
       </view>
-      <view class="card"><view class="subtitle">我的参与</view><button class="secondary" bindtap="openRegistrations">我的报名</button><button class="secondary" bindtap="openConnections">我的连接申请</button><view class="muted">连接申请由运营人工审核与撮合，不公开联系方式。</view></view>
+      <view class="card"><view class="subtitle">我的参与</view><button class="secondary" bindtap="openRegistrations">我的报名</button><button class="secondary" bindtap="openConnections">我的连接申请</button><view class="muted">提交申请后，未界会协助安排后续交流。</view></view>
       <view class="card"><view class="subtitle">机会接收偏好</view><view class="muted">{{identity.opportunityOptIn ? '已同意接收相关活动与机会通知。' : '目前未订阅相关活动与机会通知。'}}</view></view>
     </block>
-    <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button><button class="secondary" bindtap="openResourceManage">资源管理</button><button class="secondary" bindtap="openConnectionManage">连接申请管理</button></view>
+    <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button><button class="secondary" bindtap="openResourceManage">资源管理</button><button class="secondary" bindtap="openConnectionManage">连接申请管理</button><view class="operator-code"><view class="label">运营协作码</view><view class="muted">如需环境维护或管理员协作，可复制此编号给项目负责人。</view><button class="link-button" bindtap="copyIdentity">复制协作码</button></view></view>
     <view class="card"><view class="subtitle">使用与数据</view><view class="muted">了解我们收集什么信息、如何使用，以及如何反馈或提出删除请求。</view><button class="secondary" bindtap="openPrivacy">隐私与数据说明</button><button class="secondary" bindtap="openHelp">使用说明与反馈</button></view>
-    <view class="card"><view class="subtitle">身份编号</view><view class="muted">仅用于你向环境持有人申请管理员权限；它不是密码，也不会让他人登录你的账号。</view><button class="secondary" bindtap="copyIdentity">复制身份编号</button></view>
-    <view class="closed">账号身份由服务端验证；管理员权限仅由运营方受控授予。</view>
   </block>
 </view>
 </view>

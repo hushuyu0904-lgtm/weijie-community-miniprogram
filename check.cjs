@@ -213,7 +213,7 @@ async function main() {
   await check('resource and connection pages only use the cloud service and keep tab state', () => {
     for (const name of ['jobs', 'community']) {
       const markup = read(path.join(mp, 'pages', name, 'index.wxml'));
-      assert.match(markup, name === 'jobs' ? /资源加载中/ : /人工审核/);
+      assert.match(markup, name === 'jobs' ? /资源加载中/ : /运营协助安排/);
       const script=read(path.join(mp, 'pages', name, 'index.js'));
       assert(!/wx\.(request|uploadFile|setStorage|cloud)/.test(script));
       const { instance, definition, navigation } = page(name);
