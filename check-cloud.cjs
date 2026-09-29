@@ -235,6 +235,14 @@ async function main() {
     denied(await call('listResources', { offset: 0, category: 'bad' }), 'INVALID_ARGUMENT');
     actAs('admin');
     denied(await call('saveResourceDraft', { id: 's-test-resource-002', version: 0, resource: Object.assign(resource(), { sourceUrl: 'http://bad.example' }) }), 'INVALID_ARGUMENT');
+    const illustrated = Object.assign(resource(), { content: '', coverFileId: 'cloud://test-env.resources/cover.jpg', blocks: [{ type: 'heading', text: '从临床到医疗 AI' }, { type: 'paragraph', text: '这是未界原创长文的第一段。' }, { type: 'quote', text: '先从真实问题开始。' }, { type: 'image', fileId: 'cloud://test-env.resources/body.jpg' }] });
+    const illustratedSaved = ok(await call('saveResourceDraft', { id: 's-test-resource-004', version: 0, resource: illustrated }));
+    assert.equal(illustratedSaved.blocks.length, 4); assert.equal(illustratedSaved.coverFileId, illustrated.coverFileId);
+    ok(await call('publishResource', { id: illustratedSaved.id, version: 1 }));
+    const illustratedRead = ok(await call('getResource', { id: illustratedSaved.id }));
+    assert.equal(illustratedRead.blocks[3].fileId, illustrated.blocks[3].fileId);
+    denied(await call('saveResourceDraft', { id: 's-test-resource-005', version: 0, resource: Object.assign(resource(), { blocks: [{ type: 'image', fileId: 'https://not-cloud.example/a.jpg' }] }) }), 'INVALID_ARGUMENT');
+    denied(await call('saveResourceDraft', { id: 's-test-resource-006', version: 0, resource: Object.assign(resource(), { blocks: [{ type: 'script', text: 'bad' }] }) }), 'INVALID_ARGUMENT');
     ok(await call('saveResourceDraft', { id: 's-test-resource-003', version: 0, resource: Object.assign(resource(), { content: '', sourceUrl: '' }) }));
     denied(await call('publishResource', { id: 's-test-resource-003', version: 1 }), 'INVALID_ARGUMENT');
   });
@@ -349,5 +357,5 @@ async function main() {
   });
   console.log(count + ' groups passed: local SDK/database substitutes only; deployed identity and database rules NOT verified.');
 }
-function resource() { return { title: '测试资源', summary: '测试资源简介', category: 'knowledge', content: '测试正文', sourceLabel: '', sourceUrl: '' }; }
+function resource() { return { title: '测试资源', summary: '测试资源简介', category: 'knowledge', content: '测试正文', sourceLabel: '', sourceUrl: '', coverFileId: '', blocks: [] }; }
 main().catch(error => { console.error(error); process.exitCode = 1; });

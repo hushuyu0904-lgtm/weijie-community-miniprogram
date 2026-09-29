@@ -4,8 +4,9 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const FIELDS = ['title', 'description', 'location', 'category', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy'];
 const ACTIVITY_CATEGORIES = ['coffee', 'outing', 'lecture', 'chat', 'other'];
-const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl'];
+const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl', 'coverFileId', 'blocks'];
 const RESOURCE_CATEGORIES = ['opportunity', 'news', 'knowledge', 'recap'];
+const RESOURCE_BLOCK_TYPES = ['heading', 'paragraph', 'quote', 'image'];
 const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeeds', 'experience', 'shareExperience'];
 const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
 const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'clinical', 'research', 'public-health', 'overseas', 'other'];
@@ -111,6 +112,31 @@ function activityInput(value, publishing) {
   return result;
 }
 
+function storageFileId(value, name, required = false) {
+  if (value === undefined || value === '') {
+    if (required) fail('INVALID_ARGUMENT', name + '为必填项');
+    return '';
+  }
+  if (typeof value !== 'string' || value.length > 500 || !/^cloud:\/\//.test(value)) fail('INVALID_ARGUMENT', name + '格式无效');
+  return value;
+}
+
+function resourceBlocks(value) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 32) fail('INVALID_ARGUMENT', '正文最多包含 32 个内容块');
+  return value.map((block, index) => {
+    fieldsOnly(block, ['type', 'text', 'fileId']);
+    if (!RESOURCE_BLOCK_TYPES.includes(block.type)) fail('INVALID_ARGUMENT', '第 ' + (index + 1) + ' 个内容块类型无效');
+    if (block.type === 'image') return { type: 'image', fileId: storageFileId(block.fileId, '图片') };
+    const limit = block.type === 'heading' ? 120 : block.type === 'quote' ? 600 : 3000;
+    return { type: block.type, text: textField(block.text, '第 ' + (index + 1) + ' 个内容块', limit) };
+  });
+}
+
+function sameResourceInput(left, right) {
+  return RESOURCE_FIELDS.every(key => JSON.stringify(left[key] === undefined ? '' : left[key]) === JSON.stringify(right[key] === undefined ? '' : right[key]));
+}
+
 function resourceInput(value, publishing) {
   fieldsOnly(value, RESOURCE_FIELDS);
   if (!RESOURCE_CATEGORIES.includes(value.category)) fail('INVALID_ARGUMENT', '请选择资源分类');
@@ -120,10 +146,12 @@ function resourceInput(value, publishing) {
     category: value.category,
     content: textField(value.content, '资源正文', 8000, false),
     sourceLabel: textField(value.sourceLabel, '来源说明', 160, false),
-    sourceUrl: textField(value.sourceUrl, '来源链接', 2000, false)
+    sourceUrl: textField(value.sourceUrl, '来源链接', 2000, false),
+    coverFileId: storageFileId(value.coverFileId, '封面图片'),
+    blocks: resourceBlocks(value.blocks)
   };
   if (result.sourceUrl && !/^https:\/\//.test(result.sourceUrl)) fail('INVALID_ARGUMENT', '来源链接须以 https:// 开头');
-  if (publishing && !result.content && !result.sourceUrl) fail('INVALID_ARGUMENT', '发布资源请提供正文或来源链接');
+  if (publishing && !result.content && !result.blocks.length && !result.sourceUrl) fail('INVALID_ARGUMENT', '发布资源请提供正文、图文内容或来源链接');
   return result;
 }
 
@@ -157,6 +185,14 @@ function visibleActivity(item) {
 function visibleResource(item) {
   const result = { id: item._id, status: item.status, version: item.version };
   for (const field of RESOURCE_FIELDS) result[field] = item[field];
+  if (!Array.isArray(result.blocks)) result.blocks = [];
+  if (typeof result.coverFileId !== 'string') result.coverFileId = '';
+  return result;
+}
+
+function visibleResourceSummary(item) {
+  const result = { id: item._id, status: item.status, version: item.version };
+  for (const field of ['title', 'summary', 'category', 'sourceLabel', 'coverFileId']) result[field] = item[field] || '';
   return result;
 }
 
@@ -179,13 +215,13 @@ async function saveResourceDraft(event, actor) {
       return visibleResource(record);
     } catch (error) {
       const saved = await findResource(id);
-      if (saved && saved.createdBy === actor && saved.status === 'draft' && saved.version === 1 && RESOURCE_FIELDS.every(key => saved[key] === input[key])) return visibleResource(saved);
+      if (saved && saved.createdBy === actor && saved.status === 'draft' && saved.version === 1 && sameResourceInput(saved, input)) return visibleResource(saved);
       if (saved) fail('CONFLICT', '资源编号已存在，请返回资源管理核实');
       throw error;
     }
   }
   if (existing.status !== 'draft') fail('CONFLICT', '已发布资源本阶段只读');
-  if (existing.version === version + 1 && RESOURCE_FIELDS.every(key => existing[key] === input[key])) return visibleResource(existing);
+  if (existing.version === version + 1 && sameResourceInput(existing, input)) return visibleResource(existing);
   if (existing.version !== version) fail('CONFLICT', '资源已被更新，请返回管理列表重新打开');
   const changes = Object.assign({}, input, { version: version + 1, updatedAt: Date.now() });
   const result = await collection.where({ _id: id, status: 'draft', version }).update({ data: changes });
@@ -550,10 +586,10 @@ exports.main = async event => {
           query.category = event.category;
         }
         const result = await db.collection('resources').where(query).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
-        data = result.data.map(visibleResource);
+        data = result.data.map(visibleResourceSummary);
       } else {
         const result = await db.collection(action === 'listManagedResources' ? 'resources' : 'activities').where({}).orderBy('createdAt', 'desc').orderBy('_id', 'desc').skip(offset).limit(20).get();
-        data = result.data.map(action === 'listManagedResources' ? visibleResource : visibleActivity);
+        data = result.data.map(action === 'listManagedResources' ? visibleResourceSummary : visibleActivity);
       }
     }
     return { ok: true, data };

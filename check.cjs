@@ -18,7 +18,7 @@ function page(name, api = service, depth = 2) {
   let definition;
   const navigation = [];
   vm.runInNewContext(read(path.join(mp, 'pages', name, 'index.js')), {
-    require: name => name.includes('profile-options') ? require('./miniprogram/data/profile-options') : api,
+    require: name => name.includes('profile-options') ? require('./miniprogram/data/profile-options') : name.includes('resource-media') ? { getTempFileUrls: async () => ({}) } : api,
     Page: value => { definition = value; },
     getCurrentPages: () => Array(depth).fill({}),
     wx: Object.fromEntries(['navigateTo', 'navigateBack', 'switchTab', 'showToast'].map(method =>

@@ -84,9 +84,11 @@
 | `_id` | string (`s-…`) | 管理端生成、服务端校验的资源编号 |
 | `status` | `draft` / `published` | 草稿隔离与成员可见性 |
 | `version` | number | 乐观并发控制 |
-| `title`、`summary`、`content` | string | 标题、简介与可选正文 |
+| `title`、`summary`、`content` | string | 标题、简介与旧版纯文本正文；旧资源仍可读取 |
+| `coverFileId` | string | 可选 CloudBase 云存储封面图文件 ID |
+| `blocks` | array | 图文长文内容块：`heading`、`paragraph`、`quote`、`image`；最多 32 块、6 张正文图 |
 | `category` | `opportunity` / `news` / `knowledge` / `recap` | 资源分类 |
-| `sourceLabel`、`sourceUrl` | string | 可选来源说明与 HTTPS 链接 |
+| `sourceLabel`、`sourceUrl` | string | 可选来源说明与 HTTPS 链接；转载全文前须确认授权 |
 | `createdBy` | string | 仅服务端内部追溯，不返回成员端 |
 | `createdAt`、`updatedAt`、`publishedAt` | number | 生命周期时间戳 |
 

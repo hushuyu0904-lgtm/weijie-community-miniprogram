@@ -1,6 +1,6 @@
 const cloud = require('../../services/cloud');
 Page({
-  data: { status: 'loading', identity: null, error: '', stageLabel: '', directionLabels: '' },
+  data: { status: 'loading', identity: null, error: '', stageLabel: '', directionLabels: '', avatarLetter: '未' },
   onShow() { if (typeof this.getTabBar === 'function' && this.getTabBar()) this.getTabBar().setData({ selected: 3 }); this._active = true; return this.loadIdentity(); },
   onHide() { this._active = false; this._request++; this.setData({ identity: null }); },
   onUnload() { this._active = false; },
@@ -9,7 +9,7 @@ Page({
     this.setData({ status: 'loading', identity: null, error: '' });
     try {
       const identity = await cloud.call('identity');
-      if (this._active && request === this._request) this.setData({ identity, status: 'ready', stageLabel: this.stageLabel(identity), directionLabels: this.directionLabels(identity) });
+      if (this._active && request === this._request) this.setData({ identity, status: 'ready', stageLabel: this.stageLabel(identity), directionLabels: this.directionLabels(identity), avatarLetter: this.avatarLetter(identity) });
     } catch (error) {
       if (this._active && request === this._request) this.setData({ status: 'error', error: error.message });
     }
@@ -25,6 +25,10 @@ Page({
   directionLabels(identity) {
     const labels = { 'medical-ai': '医疗 AI', pharma: '药企 / Biotech', consulting: '咨询', internet: '互联网 / 产品', startup: '创业', investment: '投资', clinical: '临床发展 / 规培', research: '科研 / 学术', 'public-health': '公共卫生 / 政策', overseas: '海外深造 / 工作', other: '其他方向' };
     return identity && identity.profile ? (identity.profile.directions || []).map(item => labels[item] || item).join('、') : '';
+  },
+  avatarLetter(identity) {
+    const name = identity && identity.profile && identity.profile.displayName;
+    return typeof name === 'string' && name.trim() ? Array.from(name.trim())[0] : '未';
   },
   openOnboarding() {
     wx.navigateTo({ url: '/pages/onboarding/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
