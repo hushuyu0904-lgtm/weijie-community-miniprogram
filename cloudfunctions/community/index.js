@@ -474,7 +474,7 @@ exports.main = async event => {
       'action', 'userInfo', 'OPENID', 'APPID', 'UNIONID',
       // CloudBase / 微信在不同运行时或触发方式下可能附带的只读上下文。
       // 它们从不参与身份、角色或任何业务字段判断。
-      'FROM_OPENID', 'FROM_APPID', 'FROM_UNIONID', 'ENV', 'CLIENTIP', 'TENCENTCLOUD_REGION'
+      'FROM_OPENID', 'FROM_APPID', 'FROM_UNIONID', 'ENV', 'CLIENTIP', 'TENCENTCLOUD_REGION', 'tcbcontext'
     ].concat(allowed[action]));
     if (action === 'identity') return { ok: true, data: {
       memberKey,

@@ -87,6 +87,7 @@ async function main() {
     denied(await run({ action: 'identity', OPENID: 'admin', role: 'admin' }), 'INVALID_ARGUMENT');
     assert.equal(ok(await run({ action: 'identity', OPENID: 'admin', APPID: 'other-app', UNIONID: 'fake-union' })).role, 'visitor');
     assert.equal(ok(await run({ action: 'identity', userInfo: { openId: 'admin', role: 'admin' } })).role, 'visitor');
+    assert.equal(ok(await run({ action: 'identity', tcbcontext: { OPENID: 'admin', role: 'admin' } })).role, 'visitor');
     denied(await call('registerAdmin'), 'INVALID_ARGUMENT');
     delete context.OPENID;
     denied(await run({ action: 'identity', userInfo: { openId: 'admin' } }), 'UNAUTHENTICATED');
