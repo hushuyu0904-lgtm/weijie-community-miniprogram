@@ -64,8 +64,9 @@ Page({
     this.setData({ consents: { privacyAccepted: values.includes('privacy'), opportunityOptIn: values.includes('opportunity') }, error: '' });
   },
   showPrivacy() {
-    wx.showModal({ title: '内测数据说明', content: '未界仅将你填写的职业背景、兴趣方向与授权偏好用于活动推荐、资源推荐和人工连接撮合。资料不会对其他用户公开，也不会在未经你同意的情况下提供给企业。正式上线前将补充完整隐私政策与个人信息处理规则。', showCancel: false });
+    wx.navigateTo({ url: '/pages/privacy/index' });
   },
+  openHelp() { wx.navigateTo({ url: '/pages/help/index' }); },
   async submit() {
     const directions = this.data.directionOptions.filter(item => item.checked).map(item => item.value);
     const currentNeeds = this.data.needOptions.filter(item => item.checked).map(item => item.value);

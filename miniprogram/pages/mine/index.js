@@ -46,5 +46,11 @@ Page({
   openManage() {
     if (!this.data.identity || this.data.identity.role !== 'admin') return;
     wx.navigateTo({ url: '/pages/activity-manage/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openPrivacy() {
+    wx.navigateTo({ url: '/pages/privacy/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
+  },
+  openHelp() {
+    wx.navigateTo({ url: '/pages/help/index', fail() { wx.showToast({ title: '页面打开失败，请重试', icon: 'none' }); } });
   }
 });

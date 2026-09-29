@@ -14,7 +14,9 @@
     "pages/resource-manage/index",
     "pages/resource-edit/index",
     "pages/my-connections/index",
-    "pages/connection-manage/index"
+    "pages/connection-manage/index",
+    "pages/privacy/index",
+    "pages/help/index"
   ],
   "window": {
     "navigationBarTitleText": "未界",

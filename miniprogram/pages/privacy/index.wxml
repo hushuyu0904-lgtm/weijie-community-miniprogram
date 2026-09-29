@@ -1,0 +1,12 @@
+<view class="page">
+  <view class="kicker">WEIJIE / BETA</view>
+  <view class="title">隐私与数据说明</view>
+  <view class="muted">适用于未界小程序内测阶段。最后更新：2026 年 9 月。</view>
+  <view class="notice">未界不是公开简历库，也不会把你的联系方式、职业档案或连接申请向其他用户、企业公开。</view>
+  <view class="legal-section"><view class="subtitle">我们收集什么</view><view class="body">当你建立职业档案时，我们会收集你主动填写的称呼、当前阶段、学校或单位、专业或岗位方向、城市、感兴趣方向、希望获得的支持，以及可选的经历和分享意愿。提交 Coffee Chat 申请时，我们会收集你填写的交流方向、背景、问题和可交流时间。</view></view>
+  <view class="legal-section"><view class="subtitle">我们如何使用</view><view class="body">这些信息仅用于：提供活动报名与候补、展示已发布资源、运营人工审核和撮合 Coffee Chat、以及在你主动勾选后发送相关活动或机会通知。我们不会基于这些信息作出自动化录用或淘汰决定。</view></view>
+  <view class="legal-section"><view class="subtitle">谁能看到</view><view class="body">普通用户只能查看自己提交的信息。运营管理员仅在完成活动名单、资源发布和连接审核所必需的范围内查看最小信息。管理员权限由服务端受控，不会因前端页面显示而获得。</view></view>
+  <view class="legal-section"><view class="subtitle">我们不会做什么</view><view class="legal-list"><view>• 不向企业出售、出租或公开成员信息；</view><view>• 不公开你的微信号、手机号或其他联系方式；</view><view>• 不开放用户搜索、自动匹配或即时私信；</view><view>• 不在本内测版本接收完整简历或开展支付。</view></view></view>
+  <view class="legal-section"><view class="subtitle">保存、撤回与删除</view><view class="body">你可随时在“我的”中修改职业档案和机会接收偏好。如需撤回内测授权、删除职业档案或反馈数据问题，请通过“使用说明与反馈”联系未界内测运营团队。处理删除请求时，我们会在完成必要核验后删除或匿名化相关内测数据；法律、审计或争议处理所必需的最小记录除外。</view></view>
+  <button class="primary" bindtap="openHelp">使用说明与反馈</button>
+</view>

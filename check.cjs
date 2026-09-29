@@ -53,6 +53,10 @@ async function main() {
       const markup = read(path.join(mp, route + '.wxml'));
       for (const match of markup.matchAll(/bindtap="([^"]+)"/g)) assert.equal(typeof definition[match[1]], 'function');
     }
+    assert(app.pages.includes('pages/privacy/index'));
+    assert(app.pages.includes('pages/help/index'));
+    assert.match(read(path.join(mp, 'pages', 'privacy', 'index.wxml')), /不向企业出售、出租或公开成员信息/);
+    assert.match(read(path.join(mp, 'pages', 'help', 'index.wxml')), /未界内测运营团队 \+ 临时邮箱/);
     function walk(dir) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const file = path.join(dir, entry.name);
