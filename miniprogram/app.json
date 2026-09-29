@@ -20,13 +20,13 @@
   ],
   "window": {
     "navigationBarTitleText": "未界",
-    "navigationBarBackgroundColor": "#c8f2dc",
+    "navigationBarBackgroundColor": "#f1f0ea",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#ffffff"
   },
   "tabBar": {
     "color": "#647068",
-    "selectedColor": "#087649",
+    "selectedColor": "#263c31",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
