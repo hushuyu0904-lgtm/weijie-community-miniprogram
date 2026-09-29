@@ -7,3 +7,6 @@ page{background:#faf9f6}.resource-page-body{padding-left:0;padding-right:0}.reso
 
 /* Keep the resource filters on the same compact flex rhythm as activities. */
 .resource-filters{display:flex;gap:4px;width:100%;box-sizing:border-box;white-space:normal}.resource-filter{display:flex;flex:1;min-width:0;min-height:44px;margin:0;padding:8px 0;box-sizing:border-box;align-items:center;justify-content:center;gap:2px;font-size:13px;line-height:1.2}.resource-filter image{display:block;width:14px;height:14px;flex-shrink:0}.resource-filter text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Five compact filters: same rhythm as the activity navigation, with a shared all view. */
+.resource-filters{display:flex;gap:6rpx;width:100%;box-sizing:border-box}.resource-filter{flex:1 1 0;width:0;min-width:0;min-height:88rpx;padding:12rpx 0;font-size:23rpx;gap:3rpx;box-sizing:border-box}.resource-filter image{width:26rpx;height:26rpx;flex:none}.resource-filter text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
