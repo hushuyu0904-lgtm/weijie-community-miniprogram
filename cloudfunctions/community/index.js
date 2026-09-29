@@ -19,9 +19,13 @@ function fail(code, message) {
 }
 
 function fieldsOnly(value, allowed) {
-  if (!value || typeof value !== 'object' || Array.isArray(value) ||
-      Object.keys(value).some(key => !allowed.includes(key))) {
-    fail('INVALID_ARGUMENT', '请求包含不允许的字段');
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('INVALID_ARGUMENT', '请求格式无效');
+  }
+  const unexpected = Object.keys(value).filter(key => !allowed.includes(key));
+  if (unexpected.length) {
+    // 只返回字段名，方便测试环境定位前端协议或平台注入，不回显字段值。
+    fail('INVALID_ARGUMENT', '请求包含不允许的字段：' + unexpected.slice(0, 5).join('、'));
   }
 }
 
@@ -466,7 +470,12 @@ exports.main = async event => {
     if (!Object.prototype.hasOwnProperty.call(allowed, action)) fail('INVALID_ARGUMENT', '不支持的操作');
     // 小程序云函数可能在 event 顶层注入身份元数据。它们只为兼容平台而放行，
     // 身份与角色始终只取 getWXContext() 和 members，绝不读取这些前端可伪造字段。
-    fieldsOnly(event, ['action', 'userInfo', 'OPENID', 'APPID', 'UNIONID'].concat(allowed[action]));
+    fieldsOnly(event, [
+      'action', 'userInfo', 'OPENID', 'APPID', 'UNIONID',
+      // CloudBase / 微信在不同运行时或触发方式下可能附带的只读上下文。
+      // 它们从不参与身份、角色或任何业务字段判断。
+      'FROM_OPENID', 'FROM_APPID', 'FROM_UNIONID', 'ENV', 'CLIENTIP', 'TENCENTCLOUD_REGION'
+    ].concat(allowed[action]));
     if (action === 'identity') return { ok: true, data: {
       memberKey,
       role: active ? member.role : 'visitor',
