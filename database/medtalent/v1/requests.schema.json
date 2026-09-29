@@ -1,0 +1,434 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:weijie:medtalent:requests:1.0.0",
+  "title": "community新增action请求契约",
+  "description": "仅新action。当前后端尚未实现。身份及核验分不可由客户端传入。可信平台附加的userInfo由入口移除后校验，不能用于身份判断。",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/getTalentQuestionnaire"
+    },
+    {
+      "$ref": "#/$defs/submitTalentProfile"
+    },
+    {
+      "$ref": "#/$defs/getMyTalentProfile"
+    },
+    {
+      "$ref": "#/$defs/setTalentConsent"
+    },
+    {
+      "$ref": "#/$defs/listTalentJobs"
+    },
+    {
+      "$ref": "#/$defs/getMyTalentMatches"
+    },
+    {
+      "$ref": "#/$defs/requestTalentDeletion"
+    },
+    {
+      "$ref": "#/$defs/getTalentDeletionStatus"
+    }
+  ],
+  "$defs": {
+    "Answer": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "instanceId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "provided",
+            "unknown",
+            "skipped",
+            "not_asked",
+            "not_applicable",
+            "prefer_not_to_say",
+            "not_collected_in_version",
+            "not_in_catalog"
+          ]
+        },
+        "optionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "questionId",
+        "instanceId",
+        "status",
+        "optionIds"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "provided"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "optionIds": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "optionIds": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ConsentChoices": {
+      "type": "object",
+      "properties": {
+        "noticeVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "personalAnalysis": {
+          "const": true
+        },
+        "opportunityNotifications": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "noticeVersion",
+        "personalAnalysis",
+        "opportunityNotifications"
+      ],
+      "additionalProperties": false
+    },
+    "RepeatInstance": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "instanceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        }
+      },
+      "required": [
+        "groupId",
+        "instanceId"
+      ],
+      "additionalProperties": false
+    },
+    "getTalentQuestionnaire": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "getTalentQuestionnaire"
+        },
+        "questionnaireId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        }
+      },
+      "required": [
+        "action",
+        "questionnaireId"
+      ],
+      "additionalProperties": false
+    },
+    "submitTalentProfile": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "submitTalentProfile"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "expectedProfileVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "questionnaireId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "questionnaireVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "catalogId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RepeatInstance"
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "answers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Answer"
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "consents": {
+          "$ref": "#/$defs/ConsentChoices"
+        }
+      },
+      "required": [
+        "action",
+        "requestId",
+        "expectedProfileVersion",
+        "questionnaireId",
+        "questionnaireVersion",
+        "catalogId",
+        "instances",
+        "answers",
+        "consents"
+      ],
+      "additionalProperties": false
+    },
+    "getMyTalentProfile": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "getMyTalentProfile"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "setTalentConsent": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "setTalentConsent"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "purpose": {
+          "enum": [
+            "personal_analysis",
+            "opportunity_notifications"
+          ]
+        },
+        "granted": {
+          "type": "boolean"
+        },
+        "noticeVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "required": [
+        "action",
+        "requestId",
+        "purpose",
+        "granted",
+        "noticeVersion"
+      ],
+      "additionalProperties": false
+    },
+    "listTalentJobs": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "listTalentJobs"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filters": {
+          "type": "object",
+          "properties": {
+            "occupationCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "industryCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cityCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "occupationCode",
+            "industryCode",
+            "cityCode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "action",
+        "cursor",
+        "filters"
+      ],
+      "additionalProperties": false
+    },
+    "getMyTalentMatches": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "getMyTalentMatches"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "cursor"
+      ],
+      "additionalProperties": false
+    },
+    "requestTalentDeletion": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "requestTalentDeletion"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        }
+      },
+      "required": [
+        "action",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "getTalentDeletionStatus": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "const": "getTalentDeletionStatus"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        }
+      },
+      "required": [
+        "action",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

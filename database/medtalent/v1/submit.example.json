@@ -1,0 +1,104 @@
+{
+  "action": "submitTalentProfile",
+  "requestId": "demo_request_001",
+  "expectedProfileVersion": 0,
+  "questionnaireId": "onboarding",
+  "questionnaireVersion": "1.0.0",
+  "catalogId": "catalog_1.0.0",
+  "instances": [],
+  "answers": [
+    {
+      "questionId": "q_stage",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_stage_1"
+      ]
+    },
+    {
+      "questionId": "q_degree",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_degree_1"
+      ]
+    },
+    {
+      "questionId": "q_city",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_city_1"
+      ]
+    },
+    {
+      "questionId": "q_occupation",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_occupation_1"
+      ]
+    },
+    {
+      "questionId": "q_industry",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_industry_1"
+      ]
+    },
+    {
+      "questionId": "q_need",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_need_1"
+      ]
+    },
+    {
+      "questionId": "q_experience",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_experience_1"
+      ]
+    },
+    {
+      "questionId": "q_sql",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_sql_5"
+      ]
+    },
+    {
+      "questionId": "q_sql_recent",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_sql_recent_1"
+      ]
+    },
+    {
+      "questionId": "q_workmode",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_workmode_1"
+      ]
+    },
+    {
+      "questionId": "q_share",
+      "instanceId": null,
+      "status": "provided",
+      "optionIds": [
+        "q_share_1"
+      ]
+    }
+  ],
+  "consents": {
+    "noticeVersion": "1.0.0",
+    "personalAnalysis": true,
+    "opportunityNotifications": false
+  }
+}

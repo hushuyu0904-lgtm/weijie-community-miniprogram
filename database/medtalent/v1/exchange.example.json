@@ -1,0 +1,232 @@
+{
+  "eventId": "demo_event_001",
+  "sourceSystem": "weijie_cloudbase",
+  "eventType": "profile_upsert",
+  "personId": "demo_person_001",
+  "aggregateVersion": 1,
+  "occurredAt": 1790485200000,
+  "schemaVersion": "1.0.0",
+  "consentState": {
+    "personalAnalysis": true,
+    "opportunityNotifications": false,
+    "noticeVersion": "1.0.0"
+  },
+  "profile": {
+    "_id": "demo_person_001",
+    "schemaVersion": "1.0.0",
+    "personId": "demo_person_001",
+    "profileVersion": 1,
+    "state": "active",
+    "catalogId": "catalog_1.0.0",
+    "mappingVersion": "1.0.0",
+    "sourceSubmissionId": "demo_submission_001",
+    "facts": [
+      {
+        "fieldId": "current_stage",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "student"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_stage",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "highest_awarded_degree",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "degree_none"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_degree",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "current_city",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "city_shanghai"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_city",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "target_occupations",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "occ_clinical"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_occupation",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "target_industries",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "ind_health"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_industry",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "current_need",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "explore"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_need",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "experience_types",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "exp_clinical"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_experience",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "sql_behavior",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "sql_4"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_sql",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "sql_recency",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "recent_3m"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_sql_recent",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "work_modes",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "mode_onsite"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_workmode",
+            "instanceId": null
+          }
+        ]
+      },
+      {
+        "fieldId": "share_experience",
+        "groupId": null,
+        "instanceId": null,
+        "status": "provided",
+        "valueCodes": [
+          "share_yes"
+        ],
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_share",
+            "instanceId": null
+          }
+        ]
+      }
+    ],
+    "skillClaims": [
+      {
+        "conceptId": "skill_sql",
+        "levelCode": "sql_4",
+        "scaleVersion": "1.0.0",
+        "evidenceType": "self_report",
+        "verificationStatus": "unverified",
+        "sources": [
+          {
+            "submissionId": "demo_submission_001",
+            "questionId": "q_sql",
+            "instanceId": null
+          }
+        ]
+      }
+    ],
+    "facets": {
+      "stageCode": "student",
+      "degreeCode": "degree_none",
+      "cityCodes": [
+        "city_shanghai"
+      ],
+      "occupationCodes": [
+        "occ_clinical"
+      ],
+      "industryCodes": [
+        "ind_health"
+      ]
+    },
+    "updatedAt": 1790485200000
+  }
+}

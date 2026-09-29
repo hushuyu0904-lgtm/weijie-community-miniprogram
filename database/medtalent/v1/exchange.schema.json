@@ -1,0 +1,492 @@
+{
+  "type": "object",
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "sourceSystem": {
+      "const": "weijie_cloudbase"
+    },
+    "eventType": {
+      "enum": [
+        "profile_upsert",
+        "consent_changed",
+        "person_deleted"
+      ]
+    },
+    "personId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "aggregateVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "occurredAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8640000000000000
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "consentState": {
+      "type": "object",
+      "properties": {
+        "personalAnalysis": {
+          "type": "boolean"
+        },
+        "opportunityNotifications": {
+          "type": "boolean"
+        },
+        "noticeVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "required": [
+        "personalAnalysis",
+        "opportunityNotifications",
+        "noticeVersion"
+      ],
+      "additionalProperties": false
+    },
+    "profile": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/talent_profiles"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "eventId",
+    "sourceSystem",
+    "eventType",
+    "personId",
+    "aggregateVersion",
+    "occurredAt",
+    "schemaVersion",
+    "consentState",
+    "profile"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:weijie:medtalent:exchange:1.0.0",
+  "description": "服务端交换契约，不包含memberKey或微信标识。接收端仍需验证版本、用途和关联。",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "profile_upsert"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profile": {
+            "$ref": "#/$defs/talent_profiles"
+          },
+          "consentState": {
+            "properties": {
+              "personalAnalysis": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profile": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "person_deleted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "consentState": {
+            "properties": {
+              "personalAnalysis": {
+                "const": false
+              },
+              "opportunityNotifications": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "talent_profiles": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "personId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "profileVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "enum": [
+            "active",
+            "restricted"
+          ]
+        },
+        "catalogId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "mappingVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sourceSubmissionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "minItems": 0,
+          "maxItems": 500
+        },
+        "skillClaims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SkillClaim"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "facets": {
+          "type": "object",
+          "properties": {
+            "stageCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "degreeCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cityCodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+              },
+              "minItems": 0,
+              "maxItems": 20,
+              "uniqueItems": true
+            },
+            "occupationCodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+              },
+              "minItems": 0,
+              "maxItems": 30,
+              "uniqueItems": true
+            },
+            "industryCodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+              },
+              "minItems": 0,
+              "maxItems": 30,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "stageCode",
+            "degreeCode",
+            "cityCodes",
+            "occupationCodes",
+            "industryCodes"
+          ],
+          "additionalProperties": false
+        },
+        "updatedAt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8640000000000000
+        }
+      },
+      "required": [
+        "_id",
+        "schemaVersion",
+        "personId",
+        "profileVersion",
+        "state",
+        "catalogId",
+        "mappingVersion",
+        "sourceSubmissionId",
+        "facts",
+        "skillClaims",
+        "facets",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Fact": {
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "groupId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "instanceId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "provided",
+            "unknown",
+            "skipped",
+            "not_asked",
+            "not_applicable",
+            "prefer_not_to_say",
+            "not_collected_in_version",
+            "not_in_catalog"
+          ]
+        },
+        "valueCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceAnswer"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "fieldId",
+        "groupId",
+        "instanceId",
+        "status",
+        "valueCodes",
+        "sources"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "provided"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "valueCodes": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "valueCodes": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SourceAnswer": {
+      "type": "object",
+      "properties": {
+        "submissionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "questionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "instanceId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "submissionId",
+        "questionId",
+        "instanceId"
+      ],
+      "additionalProperties": false
+    },
+    "SkillClaim": {
+      "type": "object",
+      "properties": {
+        "conceptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "levelCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+        },
+        "scaleVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "evidenceType": {
+          "enum": [
+            "self_report"
+          ]
+        },
+        "verificationStatus": {
+          "enum": [
+            "unverified"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceAnswer"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "conceptId",
+        "levelCode",
+        "scaleVersion",
+        "evidenceType",
+        "verificationStatus",
+        "sources"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
