@@ -1,5 +1,6 @@
 const cloud = require('../../services/cloud');
 const profileOptions = require('../../data/profile-options');
+const media = require('../../services/resource-media');
 
 const stageOptions = [
   { value: 'student', label: '医学生 / 在读' }, { value: 'graduate', label: '毕业后探索 / 过渡期' },
@@ -16,13 +17,13 @@ Page({
     stageOptions, stageIndex: 0, needOptions: needOptions.map(item => Object.assign({}, item, { checked: false })),
     directionOptions: directionOptions.map(([value, label]) => ({ value, label, checked: false })),
     needValues: [],
-    form: { displayName: '', organization: '', specialty: '', city: '', experience: '', shareExperience: false },
-    consents: { privacyAccepted: false, opportunityOptIn: false }, submitting: false, error: ''
+    form: { displayName: '', organization: '', specialty: '', city: '', experience: '', shareExperience: false, avatarFileId: '' },
+    consents: { privacyAccepted: false, opportunityOptIn: false }, submitting: false, avatarUploading: false, avatarPreviewUrl: '', avatarLetter: '未', error: ''
   },
   inputField(event) {
     const field = event.currentTarget.dataset.field;
     if (!['displayName', 'organization', 'specialty', 'city', 'experience'].includes(field)) return;
-    this.setData({ ['form.' + field]: event.detail.value, error: '' });
+    this.setData({ ['form.' + field]: event.detail.value, avatarLetter: field === 'displayName' ? this.avatarLetter(event.detail.value) : this.data.avatarLetter, error: '' });
   },
   selectStage(event) { this.setData({ stageIndex: Number(event.detail.value), error: '' }); },
   onLoad() { this._active = true; return this.loadExisting(); },
@@ -42,10 +43,11 @@ Page({
         needOptions: needOptions.map(item => Object.assign({}, item, { checked: needValues.includes(item.value) })),
         form: Object.assign({}, this.data.form, {
           displayName: profile.displayName || '', organization: profile.organization || '', specialty: profile.specialty || '',
-          city: profile.city || '', experience: profile.experience || '', shareExperience: profile.shareExperience === true
+          city: profile.city || '', experience: profile.experience || '', shareExperience: profile.shareExperience === true, avatarFileId: profile.avatarFileId || ''
         }),
-        consents: { privacyAccepted: true, opportunityOptIn: identity.opportunityOptIn === true }
+        consents: { privacyAccepted: true, opportunityOptIn: identity.opportunityOptIn === true }, avatarLetter: this.avatarLetter(profile.displayName)
       });
+      if (profile.avatarFileId) { const urls = await media.getTempFileUrls([profile.avatarFileId]); if (this._active) this.setData({ avatarPreviewUrl: urls[profile.avatarFileId] || '' }); }
     } catch (error) { /* 新用户未建档时不阻塞填写；提交时由云函数完成注册。 */ }
   },
   selectDirections(event) {
@@ -58,6 +60,15 @@ Page({
     this.setData({ needValues: values, needOptions: needOptions.map(item => Object.assign({}, item, { checked: values.includes(item.value) })), error: '' });
   },
   toggleShare(event) { this.setData({ 'form.shareExperience': !!event.detail.value }); },
+  avatarLetter(name) { return typeof name === 'string' && name.trim() ? Array.from(name.trim())[0] : '未'; },
+  async chooseAvatar() {
+    if (this.data.submitting || this.data.avatarUploading) return;
+    this.setData({ avatarUploading: true, error: '' });
+    try { const avatarFileId = await media.pickAndUploadAvatar(); const urls = await media.getTempFileUrls([avatarFileId]); if (this._active) this.setData({ 'form.avatarFileId': avatarFileId, avatarPreviewUrl: urls[avatarFileId] || '', error: '' }); }
+    catch (error) { if (this._active && error.message !== '已取消选择图片') this.setData({ error: error.message || '头像上传失败' }); }
+    finally { if (this._active) this.setData({ avatarUploading: false }); }
+  },
+  removeAvatar() { if (!this.data.submitting && !this.data.avatarUploading) this.setData({ 'form.avatarFileId': '', avatarPreviewUrl: '' }); },
   changeConsent(event) {
     const values = event.detail.value || [];
     this.setData({ consents: { privacyAccepted: values.includes('privacy'), opportunityOptIn: values.includes('opportunity') }, error: '' });
@@ -73,6 +84,7 @@ Page({
     if (!profile.displayName.trim() || !profile.organization.trim() || !profile.specialty.trim() || !profile.city.trim() || !directions.length || !profile.currentNeeds.length || !this.data.consents.privacyAccepted) {
       this.setData({ error: '请完成必填项，并确认隐私与数据说明。' }); return;
     }
+    if (this.data.avatarUploading) { this.setData({ error: '头像上传完成后再保存。' }); return; }
     this.setData({ submitting: true, error: '' });
     try {
       await cloud.call('completeOnboarding', { profile, consents: this.data.consents });

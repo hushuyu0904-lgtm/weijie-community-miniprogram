@@ -13,11 +13,11 @@
 | `_id` | string | 云函数 | 稳定成员键 |
 | `role` | `member` / `admin` | 云函数首次注册 / 控制台受控授予 | 每次请求服务端鉴权 |
 | `active` | boolean | 云函数首次注册 / 控制台受控停用 | 是否允许访问 |
-| `profile` | object | 云函数 | 当前职业画像 |
+| `profile` | object | 云函数 | 当前职业画像；可选 `avatarFileId` 仅在本人“我的”页展示 |
 | `consent` | object | 云函数 | `version`、`privacyAccepted`、`opportunityOptIn` |
 | `registeredAt`、`profileUpdatedAt` | number | 云函数 | 生命周期时间戳（毫秒） |
 
-`profile` 只允许：`displayName`、`stage`、`organization`、`specialty`、`city`、`directions`、`currentNeeds`、`experience`、`shareExperience`。其中 `directions` 为 1–5 个方向，`currentNeeds` 为 1–4 个当前希望获得的支持。客户端不能直接更新其中任何字段。
+`profile` 只允许：`displayName`、`stage`、`organization`、`specialty`、`city`、`directions`、`currentNeeds`、`experience`、`shareExperience`、`avatarFileId`。其中 `directions` 为 1–5 个方向，`currentNeeds` 为 1–4 个当前希望获得的支持；头像仅接受 CloudBase 存储文件 ID，默认不上传。客户端不能直接更新其中任何字段。
 
 ## activities
 

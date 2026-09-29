@@ -1,6 +1,7 @@
 const cloud = require('../../services/cloud');
+const media = require('../../services/resource-media');
 Page({
-  data: { status: 'loading', identity: null, error: '', stageLabel: '', directionLabels: '', avatarLetter: '未' },
+  data: { status: 'loading', identity: null, error: '', stageLabel: '', directionLabels: '', avatarLetter: '未', avatarUrl: '' },
   onShow() { if (typeof this.getTabBar === 'function' && this.getTabBar()) this.getTabBar().setData({ selected: 3 }); this._active = true; return this.loadIdentity(); },
   onHide() { this._active = false; this._request++; this.setData({ identity: null }); },
   onUnload() { this._active = false; },
@@ -9,7 +10,11 @@ Page({
     this.setData({ status: 'loading', identity: null, error: '' });
     try {
       const identity = await cloud.call('identity');
-      if (this._active && request === this._request) this.setData({ identity, status: 'ready', stageLabel: this.stageLabel(identity), directionLabels: this.directionLabels(identity), avatarLetter: this.avatarLetter(identity) });
+      if (this._active && request === this._request) {
+        const avatarFileId = identity.profile && identity.profile.avatarFileId;
+        const urls = avatarFileId ? await media.getTempFileUrls([avatarFileId]) : {};
+        if (this._active && request === this._request) this.setData({ identity, status: 'ready', stageLabel: this.stageLabel(identity), directionLabels: this.directionLabels(identity), avatarLetter: this.avatarLetter(identity), avatarUrl: urls[avatarFileId] || '' });
+      }
     } catch (error) {
       if (this._active && request === this._request) this.setData({ status: 'error', error: error.message });
     }

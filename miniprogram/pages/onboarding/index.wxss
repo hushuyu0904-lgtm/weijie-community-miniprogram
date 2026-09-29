@@ -11,3 +11,4 @@
 .consent-row { display: block; margin: 18rpx 0; }
 .consent-row checkbox { transform: scale(.78); margin-right: 4rpx; }
 .text-button { color: #187552; background: transparent; font-size: 26rpx; min-height: auto; padding: 0; margin: 16rpx 0 0; text-align: left; }
+.avatar-editor{display:flex;align-items:center;justify-content:space-between;gap:20rpx;margin-top:12rpx}.avatar-editor-actions{display:flex;align-items:center;gap:14rpx}.avatar-preview,.avatar-fallback{width:84rpx;height:84rpx;border-radius:50%;background:#e6f3ea;flex:none}.avatar-preview{display:block}.avatar-fallback{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1b7653,#70b992);color:#fff;font-family:"Songti SC","STSong",serif;font-size:38rpx;font-weight:700}.compact-avatar-button{margin:0;min-height:64rpx;padding:8rpx 16rpx;font-size:24rpx}

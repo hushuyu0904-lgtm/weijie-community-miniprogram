@@ -10,6 +10,7 @@
     <label class="label">学校或单位 *</label><input value="{{form.organization}}" data-field="organization" bindinput="inputField" maxlength="100" placeholder="例如：复旦大学 / 某医院 / 某公司" />
     <label class="label">专业或当前岗位方向 *</label><input value="{{form.specialty}}" data-field="specialty" bindinput="inputField" maxlength="80" placeholder="例如：临床医学 / 医学编辑" />
     <label class="label">所在城市 *</label><input value="{{form.city}}" data-field="city" bindinput="inputField" maxlength="40" placeholder="例如：上海" />
+    <view class="avatar-editor"><view><view class="label">头像（选填）</view><view class="form-hint">仅展示在你的“我的”页面，不向其他成员公开。</view></view><view class="avatar-editor-actions"><image wx:if="{{avatarPreviewUrl}}" class="avatar-preview" src="{{avatarPreviewUrl}}" mode="aspectFill"/><view wx:else class="avatar-fallback">{{avatarLetter}}</view><button class="secondary compact-avatar-button" loading="{{avatarUploading}}" disabled="{{submitting || avatarUploading}}" bindtap="chooseAvatar">{{form.avatarFileId ? '更换' : '上传'}}</button></view></view><button wx:if="{{form.avatarFileId}}" class="link-button" bindtap="removeAvatar">移除头像</button>
   </view>
   <view class="card">
     <view class="subtitle">你正在探索什么？</view>

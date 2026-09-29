@@ -65,7 +65,7 @@ function activity() {
 }
 function profile() {
   return { displayName: '小余', stage: 'student', organization: '复旦大学', specialty: '临床医学', city: '上海',
-    directions: ['medical-ai', 'pharma'], currentNeeds: ['explore'], experience: '', shareExperience: false };
+    directions: ['medical-ai', 'pharma'], currentNeeds: ['explore'], experience: '', shareExperience: false, avatarFileId: '' };
 }
 function consents(opportunityOptIn = false) { return { privacyAccepted: true, opportunityOptIn }; }
 function connectionRequest() {
@@ -116,6 +116,9 @@ async function main() {
     actAs('newcomer');
     const updated = ok(await call('updateProfile', { profile: Object.assign(profile(), { city: '杭州', shareExperience: true }), consents: consents(false) }));
     assert.equal(updated.profile.city, '杭州'); assert.equal(updated.profile.shareExperience, true); assert.equal(updated.opportunityOptIn, false);
+    const avatar = 'cloud://test-env.avatars/avatar.jpg';
+    assert.equal(ok(await call('updateProfile', { profile: Object.assign(profile(), { avatarFileId: avatar }), consents: consents(false) })).profile.avatarFileId, avatar);
+    denied(await call('updateProfile', { profile: Object.assign(profile(), { avatarFileId: 'https://bad.example/avatar.jpg' }), consents: consents(false) }), 'INVALID_ARGUMENT');
   });
   await check('nonmembers and disabled accounts cannot browse; members cannot call management directly', async () => {
     for (const user of ['visitor', 'disabled']) {

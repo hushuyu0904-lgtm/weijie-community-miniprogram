@@ -28,11 +28,12 @@ async function call(action, payload = {}) {
   return result.data;
 }
 
-async function uploadResourceImage(filePath) {
+async function uploadImage(filePath, scope) {
   ensureInitialized();
   if (typeof filePath !== 'string' || !filePath) throw new Error('图片文件无效');
+  if (!['resources', 'avatars'].includes(scope)) throw new Error('图片用途无效');
   const suffix = (filePath.match(/\.([a-zA-Z0-9]{1,8})(?:$|\?)/) || [])[1] || 'jpg';
-  const cloudPath = 'resources/' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + suffix.toLowerCase();
+  const cloudPath = scope + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + suffix.toLowerCase();
   try {
     const result = await wx.cloud.uploadFile({ cloudPath, filePath });
     if (!result || typeof result.fileID !== 'string' || !result.fileID) throw new Error('云存储未返回图片编号');
@@ -41,6 +42,9 @@ async function uploadResourceImage(filePath) {
     throw new Error('图片上传失败，请检查云开发存储配置和网络后重试');
   }
 }
+
+function uploadResourceImage(filePath) { return uploadImage(filePath, 'resources'); }
+function uploadAvatarImage(filePath) { return uploadImage(filePath, 'avatars'); }
 
 async function getTempFileUrls(fileIds) {
   ensureInitialized();
@@ -57,4 +61,4 @@ async function getTempFileUrls(fileIds) {
   }
 }
 
-module.exports = { call, uploadResourceImage, getTempFileUrls };
+module.exports = { call, uploadResourceImage, uploadAvatarImage, getTempFileUrls };

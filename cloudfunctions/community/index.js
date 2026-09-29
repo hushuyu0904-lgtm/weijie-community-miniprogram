@@ -7,7 +7,7 @@ const ACTIVITY_CATEGORIES = ['coffee', 'outing', 'lecture', 'chat', 'other'];
 const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl', 'coverFileId', 'blocks'];
 const RESOURCE_CATEGORIES = ['opportunity', 'news', 'knowledge', 'recap'];
 const RESOURCE_BLOCK_TYPES = ['heading', 'paragraph', 'quote', 'image'];
-const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeeds', 'experience', 'shareExperience'];
+const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeeds', 'experience', 'shareExperience', 'avatarFileId'];
 const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
 const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'clinical', 'research', 'public-health', 'overseas', 'other'];
 const NEEDS = ['explore', 'opportunities', 'network', 'resume'];
@@ -62,7 +62,8 @@ function profileInput(value) {
     directions: value.directions.slice(),
     currentNeeds: currentNeeds.slice(),
     experience: textField(value.experience, '经历介绍', 1000, false),
-    shareExperience: value.shareExperience
+    shareExperience: value.shareExperience,
+    avatarFileId: storageFileId(value.avatarFileId, '头像')
   };
 }
 

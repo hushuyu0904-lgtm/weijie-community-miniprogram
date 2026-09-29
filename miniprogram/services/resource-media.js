@@ -28,4 +28,9 @@ async function pickAndUploadImage() {
   return cloud.uploadResourceImage(path);
 }
 
-module.exports = { pickAndUploadImage, getTempFileUrls: cloud.getTempFileUrls };
+async function pickAndUploadAvatar() {
+  const path = await chooseOneImage();
+  return cloud.uploadAvatarImage(path);
+}
+
+module.exports = { pickAndUploadImage, pickAndUploadAvatar, getTempFileUrls: cloud.getTempFileUrls };
