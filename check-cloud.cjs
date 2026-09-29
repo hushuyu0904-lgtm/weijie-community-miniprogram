@@ -84,7 +84,7 @@ async function main() {
     const who = ok(await call('identity'));
     assert.equal(who.memberKey, memberKey('visitor')); assert.equal(who.role, 'visitor'); assert.equal(who.canBrowse, false);
     assert.equal(records.members.size, 3);
-    denied(await run({ action: 'identity', OPENID: 'admin', role: 'admin' }), 'INVALID_ARGUMENT');
+    assert.equal(ok(await run({ action: 'identity', OPENID: 'admin', role: 'admin' })).role, 'visitor');
     assert.equal(ok(await run({ action: 'identity', OPENID: 'admin', APPID: 'other-app', UNIONID: 'fake-union' })).role, 'visitor');
     assert.equal(ok(await run({ action: 'identity', userInfo: { openId: 'admin', role: 'admin' } })).role, 'visitor');
     assert.equal(ok(await run({ action: 'identity', tcbcontext: { OPENID: 'admin', role: 'admin' } })).role, 'visitor');

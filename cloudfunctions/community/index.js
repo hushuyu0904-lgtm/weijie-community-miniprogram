@@ -468,14 +468,10 @@ exports.main = async event => {
       saveResourceDraft: ['id', 'version', 'resource'], publishResource: ['id', 'version']
     };
     if (!Object.prototype.hasOwnProperty.call(allowed, action)) fail('INVALID_ARGUMENT', '不支持的操作');
-    // 小程序云函数可能在 event 顶层注入身份元数据。它们只为兼容平台而放行，
-    // 身份与角色始终只取 getWXContext() 和 members，绝不读取这些前端可伪造字段。
-    fieldsOnly(event, [
-      'action', 'userInfo', 'OPENID', 'APPID', 'UNIONID',
-      // CloudBase / 微信在不同运行时或触发方式下可能附带的只读上下文。
-      // 它们从不参与身份、角色或任何业务字段判断。
-      'FROM_OPENID', 'FROM_APPID', 'FROM_UNIONID', 'ENV', 'CLIENTIP', 'TENCENTCLOUD_REGION', 'tcbcontext'
-    ].concat(allowed[action]));
+    // CloudBase 会在 event 顶层注入运行时字段（例如 tcbcontext），不同工具版本并不稳定。
+    // 顶层未知字段一律忽略：身份只取 getWXContext()，角色只取 members；所有实际业务
+    // 输入仍由 profileInput/activityInput/resourceInput/connectionRequestInput 严格白名单校验。
+    // 因而客户端额外传 role、OPENID 等字段既不会被读取，也无法造成提权。
     if (action === 'identity') return { ok: true, data: {
       memberKey,
       role: active ? member.role : 'visitor',
