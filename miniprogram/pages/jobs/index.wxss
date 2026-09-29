@@ -13,3 +13,6 @@ page{background:#faf9f6}.resource-page-body{padding-left:0;padding-right:0}.reso
 
 /* Five filters fit on one line; “all” intentionally has no duplicate icon. */
 .resource-filters{gap:4rpx}.resource-filter{flex:1 1 0;width:0;min-width:0;min-height:84rpx;padding:10rpx 0;font-size:22rpx;gap:2rpx}.resource-filter image{width:24rpx;height:24rpx;flex:none}
+
+/* Match the activity filter inset; keep the resource rows themselves unchanged. */
+.resource-page-body>.resource-scroll{margin-left:16rpx;margin-right:16rpx}.all-icon{width:22rpx;height:22rpx;display:grid;grid-template-columns:repeat(2,8rpx);grid-template-rows:repeat(2,8rpx);gap:4rpx;flex:none}.all-icon text{width:8rpx;height:8rpx;background:#607064}.all-icon.selected-icon text{background:#fff}
