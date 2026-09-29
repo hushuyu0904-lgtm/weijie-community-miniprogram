@@ -1,13 +1,12 @@
 const cloud = require('../../services/cloud');
+const profileOptions = require('../../data/profile-options');
 
 const stageOptions = [
   { value: 'student', label: '医学生 / 在读' }, { value: 'graduate', label: '毕业后探索 / 过渡期' },
   { value: 'resident', label: '规培 / 临床早期' }, { value: 'clinician', label: '临床 / 医疗从业者' },
   { value: 'industry', label: '已在产业工作' }, { value: 'other', label: '其他' }
 ];
-const directionOptions = [
-  ['medical-ai', '医疗 AI'], ['pharma', '药企 / Biotech'], ['consulting', '咨询'], ['internet', '互联网 / 产品'], ['startup', '创业'], ['investment', '投资'], ['clinical', '临床发展 / 规培'], ['research', '科研 / 学术'], ['public-health', '公共卫生 / 政策'], ['overseas', '海外深造 / 工作'], ['other', '其他方向']
-];
+const directionOptions = profileOptions.directions.map(item => [item.id, item.label]);
 const needOptions = [
   ['explore', '了解不同职业方向'], ['opportunities', '寻找实习或工作机会'], ['network', '寻找同行或前辈交流'], ['resume', '完善简历与求职准备']
 ].map(([value, label]) => ({ value, label }));
@@ -72,7 +71,7 @@ Page({
     const currentNeeds = this.data.needOptions.filter(item => item.checked).map(item => item.value);
     const profile = Object.assign({}, this.data.form, { stage: stageOptions[this.data.stageIndex].value, directions, currentNeeds });
     if (!profile.displayName.trim() || !profile.organization.trim() || !profile.specialty.trim() || !profile.city.trim() || !directions.length || !profile.currentNeeds.length || !this.data.consents.privacyAccepted) {
-      this.setData({ error: '请完成必填项，并确认内测隐私说明。' }); return;
+      this.setData({ error: '请完成必填项，并确认隐私与数据说明。' }); return;
     }
     this.setData({ submitting: true, error: '' });
     try {

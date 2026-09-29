@@ -18,7 +18,7 @@ function page(name, api = service, depth = 2) {
   let definition;
   const navigation = [];
   vm.runInNewContext(read(path.join(mp, 'pages', name, 'index.js')), {
-    require: () => api,
+    require: name => name.includes('profile-options') ? require('./miniprogram/data/profile-options') : api,
     Page: value => { definition = value; },
     getCurrentPages: () => Array(depth).fill({}),
     wx: Object.fromEntries(['navigateTo', 'navigateBack', 'switchTab', 'showToast'].map(method =>
@@ -56,7 +56,7 @@ async function main() {
     assert(app.pages.includes('pages/privacy/index'));
     assert(app.pages.includes('pages/help/index'));
     assert.match(read(path.join(mp, 'pages', 'privacy', 'index.wxml')), /不向企业出售、出租或公开成员信息/);
-    assert.match(read(path.join(mp, 'pages', 'help', 'index.wxml')), /未界内测运营团队 \+ 临时邮箱/);
+    assert.match(read(path.join(mp, 'pages', 'help', 'index.wxml')), /未界运营团队 \+ 临时邮箱/);
     function walk(dir) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const file = path.join(dir, entry.name);

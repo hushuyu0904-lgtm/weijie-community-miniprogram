@@ -1,9 +1,9 @@
 <view class="page">
-  <view class="kicker">WEIJIE / BETA</view>
+  <view class="kicker">WEIJIE / SUPPORT</view>
   <view class="title">使用说明与反馈</view>
   <view class="intro">未界当前处于小范围内测。我们希望先把活动、资源与真实连接做扎实，再逐步扩展功能。</view>
   <view class="card"><view class="subtitle">如何使用</view><view class="legal-list"><view>1. 在“我的”建立最小职业档案；</view><view>2. 在“活动”报名免费活动，满员后会进入候补；</view><view>3. 在“资源”阅读已审核内容或复制来源链接；</view><view>4. 在“连接”提交 Coffee Chat 申请，等待人工审核与双方确认。</view></view></view>
-  <view class="card"><view class="subtitle">内测反馈、撤回授权或删除申请</view><view class="body">请联系未界内测运营团队，并写明：你使用的称呼、问题描述或希望删除/撤回的信息。为保护账号安全，运营会在核验后处理。</view><view class="feedback-address">未界内测运营团队 + 临时邮箱<br/>请以入群邀请中告知的临时邮箱为准</view><view class="form-hint">正式发布前，请将这里替换为团队可长期接收邮件的官方邮箱。</view></view>
+  <view class="card"><view class="subtitle">反馈、撤回授权或删除申请</view><view class="body">请联系未界运营团队，并写明：你使用的称呼、问题描述或希望删除/撤回的信息。为保护账号安全，运营会在核验后处理。</view><view class="feedback-address">未界运营团队 + 临时邮箱<br/>请以入群邀请中告知的临时邮箱为准</view><view class="form-hint">正式发布前，请将这里替换为团队可长期接收邮件的官方邮箱。</view></view>
   <view class="card"><view class="subtitle">我们希望你反馈什么</view><view class="legal-list"><view>• 哪一步让你停住或看不懂；</view><view>• 活动、资源或连接是否与你的探索方向相关；</view><view>• 你希望未界优先解决的一个问题。</view></view></view>
   <button class="secondary" bindtap="openPrivacy">查看隐私与数据说明</button>
 </view>

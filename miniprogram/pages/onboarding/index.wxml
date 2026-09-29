@@ -22,10 +22,10 @@
   </view>
   <view class="card consent-card">
     <checkbox-group bindchange="changeConsent">
-      <label class="consent-row"><checkbox value="privacy" checked="{{consents.privacyAccepted}}" />我已阅读并同意内测隐私说明 *</label>
+      <label class="consent-row"><checkbox value="privacy" checked="{{consents.privacyAccepted}}" />我已阅读并同意隐私与数据说明 *</label>
       <label class="consent-row"><checkbox value="opportunity" checked="{{consents.opportunityOptIn}}" />我愿意接收与我的方向相关的活动和机会通知（可随时关闭）</label>
     </checkbox-group>
-    <button class="link-button" bindtap="showPrivacy">查看本次内测的数据说明</button>
+    <button class="link-button" bindtap="showPrivacy">查看隐私与数据说明</button>
   </view>
   <view wx:if="{{error}}" class="notice">{{error}}</view>
   <button class="primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">保存并进入未界</button>

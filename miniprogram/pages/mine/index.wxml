@@ -21,8 +21,8 @@
       <view class="card"><view class="subtitle">机会接收偏好</view><view class="muted">{{identity.opportunityOptIn ? '已同意接收相关活动与机会通知。' : '目前未订阅相关活动与机会通知。'}}</view></view>
     </block>
     <view wx:if="{{identity.role === 'admin'}}" class="card"><view class="subtitle">运营管理</view><button class="primary" bindtap="openManage">活动管理</button><button class="secondary" bindtap="openResourceManage">资源管理</button><button class="secondary" bindtap="openConnectionManage">连接申请管理</button></view>
-    <view class="card"><view class="subtitle">使用与数据</view><view class="muted">了解内测收集什么信息、如何使用，以及如何反馈或提出删除请求。</view><button class="secondary" bindtap="openPrivacy">隐私与数据说明</button><button class="secondary" bindtap="openHelp">使用说明与反馈</button></view>
-    <view class="card"><view class="subtitle">内测身份编号</view><view class="muted">仅用于你向环境持有人申请管理员权限；它不是密码，也不会让他人登录你的账号。</view><button class="secondary" bindtap="copyIdentity">复制身份编号</button></view>
+    <view class="card"><view class="subtitle">使用与数据</view><view class="muted">了解我们收集什么信息、如何使用，以及如何反馈或提出删除请求。</view><button class="secondary" bindtap="openPrivacy">隐私与数据说明</button><button class="secondary" bindtap="openHelp">使用说明与反馈</button></view>
+    <view class="card"><view class="subtitle">身份编号</view><view class="muted">仅用于你向环境持有人申请管理员权限；它不是密码，也不会让他人登录你的账号。</view><button class="secondary" bindtap="copyIdentity">复制身份编号</button></view>
     <view class="closed">账号身份由服务端验证；管理员权限仅由运营方受控授予。</view>
   </block>
 </view>
