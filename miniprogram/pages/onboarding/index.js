@@ -14,7 +14,7 @@ const needOptions = [
 
 Page({
   data: {
-    stageOptions, stageIndex: 0, needOptions,
+    stageOptions, stageIndex: 0, needOptions: needOptions.map(item => Object.assign({}, item, { checked: false })),
     directionOptions: directionOptions.map(([value, label]) => ({ value, label, checked: false })),
     needValues: [],
     form: { displayName: '', organization: '', specialty: '', city: '', experience: '', shareExperience: false },
@@ -40,6 +40,7 @@ Page({
         stageIndex,
         directionOptions: directionOptions.map(([value, label]) => ({ value, label, checked: selectedDirections.includes(value) })),
         needValues,
+        needOptions: needOptions.map(item => Object.assign({}, item, { checked: needValues.includes(item.value) })),
         form: Object.assign({}, this.data.form, {
           displayName: profile.displayName || '', organization: profile.organization || '', specialty: profile.specialty || '',
           city: profile.city || '', experience: profile.experience || '', shareExperience: profile.shareExperience === true
@@ -53,7 +54,10 @@ Page({
     if (values.length > 5) { wx.showToast({ title: '最多选择 5 个方向', icon: 'none' }); return; }
     this.setData({ directionOptions: directionOptions.map(([value, label]) => ({ value, label, checked: values.includes(value) })), error: '' });
   },
-  selectNeeds(event) { this.setData({ needValues: event.detail.value || [], error: '' }); },
+  selectNeeds(event) {
+    const values = event.detail.value || [];
+    this.setData({ needValues: values, needOptions: needOptions.map(item => Object.assign({}, item, { checked: values.includes(item.value) })), error: '' });
+  },
   toggleShare(event) { this.setData({ 'form.shareExperience': !!event.detail.value }); },
   changeConsent(event) {
     const values = event.detail.value || [];
@@ -64,7 +68,8 @@ Page({
   },
   async submit() {
     const directions = this.data.directionOptions.filter(item => item.checked).map(item => item.value);
-    const profile = Object.assign({}, this.data.form, { stage: stageOptions[this.data.stageIndex].value, directions, currentNeeds: this.data.needValues });
+    const currentNeeds = this.data.needOptions.filter(item => item.checked).map(item => item.value);
+    const profile = Object.assign({}, this.data.form, { stage: stageOptions[this.data.stageIndex].value, directions, currentNeeds });
     if (!profile.displayName.trim() || !profile.organization.trim() || !profile.specialty.trim() || !profile.city.trim() || !directions.length || !profile.currentNeeds.length || !this.data.consents.privacyAccepted) {
       this.setData({ error: '请完成必填项，并确认内测隐私说明。' }); return;
     }
