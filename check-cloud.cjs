@@ -65,7 +65,7 @@ function activity() {
 }
 function profile() {
   return { displayName: '小余', stage: 'student', organization: '复旦大学', specialty: '临床医学', city: '上海',
-    directions: ['medical-ai', 'pharma'], currentNeed: 'explore', experience: '', shareExperience: false };
+    directions: ['medical-ai', 'pharma'], currentNeeds: ['explore'], experience: '', shareExperience: false };
 }
 function consents(opportunityOptIn = false) { return { privacyAccepted: true, opportunityOptIn }; }
 function connectionRequest() {
@@ -106,6 +106,8 @@ async function main() {
     denied(await call('completeOnboarding', { profile: Object.assign(profile(), { role: 'admin' }), consents: consents() }), 'INVALID_ARGUMENT');
     denied(await call('updateProfile', { profile: Object.assign(profile(), { directions: [] }), consents: consents() }), 'INVALID_ARGUMENT');
     denied(await call('updateProfile', { profile: Object.assign(profile(), { directions: ['medical-ai', 'medical-ai'] }), consents: consents() }), 'INVALID_ARGUMENT');
+    denied(await call('updateProfile', { profile: Object.assign(profile(), { currentNeeds: [] }), consents: consents() }), 'INVALID_ARGUMENT');
+    denied(await call('updateProfile', { profile: Object.assign(profile(), { currentNeeds: ['explore', 'explore'] }), consents: consents() }), 'INVALID_ARGUMENT');
     denied(await call('updateProfile', { profile: profile(), consents: { privacyAccepted: false, opportunityOptIn: true } }), 'INVALID_ARGUMENT');
     register('blocked', 'member', false); actAs('blocked');
     denied(await call('completeOnboarding', { profile: profile(), consents: consents() }), 'FORBIDDEN');

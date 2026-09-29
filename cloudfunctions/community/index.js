@@ -6,9 +6,9 @@ const FIELDS = ['title', 'description', 'location', 'category', 'priceFen', 'cap
 const ACTIVITY_CATEGORIES = ['coffee', 'outing', 'lecture', 'chat', 'other'];
 const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl'];
 const RESOURCE_CATEGORIES = ['opportunity', 'news', 'knowledge', 'recap'];
-const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeed', 'experience', 'shareExperience'];
+const PROFILE_FIELDS = ['displayName', 'stage', 'organization', 'specialty', 'city', 'directions', 'currentNeeds', 'experience', 'shareExperience'];
 const STAGES = ['student', 'graduate', 'resident', 'clinician', 'industry', 'other'];
-const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'other'];
+const DIRECTIONS = ['medical-ai', 'pharma', 'consulting', 'internet', 'startup', 'investment', 'clinical', 'research', 'public-health', 'overseas', 'other'];
 const NEEDS = ['explore', 'opportunities', 'network', 'resume'];
 const CONNECTION_STATUSES = ['submitted', 'reviewing', 'closed'];
 
@@ -44,7 +44,10 @@ function profileInput(value) {
       new Set(value.directions).size !== value.directions.length || value.directions.some(item => !DIRECTIONS.includes(item))) {
     fail('INVALID_ARGUMENT', '请选择 1 至 5 个感兴趣方向');
   }
-  if (!NEEDS.includes(value.currentNeed)) fail('INVALID_ARGUMENT', '请选择当前最希望解决的问题');
+  if (!Array.isArray(value.currentNeeds) || value.currentNeeds.length < 1 || value.currentNeeds.length > NEEDS.length ||
+      new Set(value.currentNeeds).size !== value.currentNeeds.length || value.currentNeeds.some(item => !NEEDS.includes(item))) {
+    fail('INVALID_ARGUMENT', '请选择 1 至 ' + NEEDS.length + ' 个希望解决的问题');
+  }
   if (typeof value.shareExperience !== 'boolean') fail('INVALID_ARGUMENT', '分享意愿格式无效');
   return {
     displayName: textField(value.displayName, '称呼', 30),
@@ -53,7 +56,7 @@ function profileInput(value) {
     specialty: textField(value.specialty, '专业或岗位方向', 80),
     city: textField(value.city, '所在城市', 40),
     directions: value.directions.slice(),
-    currentNeed: value.currentNeed,
+    currentNeeds: value.currentNeeds.slice(),
     experience: textField(value.experience, '经历介绍', 1000, false),
     shareExperience: value.shareExperience
   };
@@ -71,6 +74,8 @@ function safeProfile(member) {
   if (!member || !member.profile) return null;
   const profile = {};
   for (const field of PROFILE_FIELDS) profile[field] = Array.isArray(member.profile[field]) ? member.profile[field].slice() : member.profile[field];
+  // 兼容测试阶段已经保存的旧单选字段；下一次保存时会自动迁移为 currentNeeds 数组。
+  if (!Array.isArray(profile.currentNeeds)) profile.currentNeeds = NEEDS.includes(member.profile.currentNeed) ? [member.profile.currentNeed] : [];
   return profile;
 }
 

@@ -17,7 +17,7 @@
 | `consent` | object | 云函数 | `version`、`privacyAccepted`、`opportunityOptIn` |
 | `registeredAt`、`profileUpdatedAt` | number | 云函数 | 生命周期时间戳（毫秒） |
 
-`profile` 只允许：`displayName`、`stage`、`organization`、`specialty`、`city`、`directions`、`currentNeed`、`experience`、`shareExperience`。客户端不能直接更新其中任何字段。
+`profile` 只允许：`displayName`、`stage`、`organization`、`specialty`、`city`、`directions`、`currentNeeds`、`experience`、`shareExperience`。其中 `directions` 为 1–5 个方向，`currentNeeds` 为 1–4 个当前希望获得的支持。客户端不能直接更新其中任何字段。
 
 ## activities
 

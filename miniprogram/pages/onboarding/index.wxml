@@ -15,8 +15,8 @@
     <view class="subtitle">你正在探索什么？</view>
     <view class="label">感兴趣方向 *（最多选 5 个）</view>
     <checkbox-group bindchange="selectDirections"><label wx:for="{{directionOptions}}" wx:key="value" class="chip {{item.checked ? 'chip-selected' : ''}}"><checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}</label></checkbox-group>
-    <label class="label">当前最希望解决的问题 *</label>
-    <picker mode="selector" range="{{needOptions}}" range-key="label" value="{{needIndex}}" bindchange="selectNeed"><view class="picker">{{needOptions[needIndex].label}} <text>›</text></view></picker>
+    <view class="label">现在希望获得什么支持？*（可多选）</view>
+    <checkbox-group bindchange="selectNeeds"><label wx:for="{{needOptions}}" wx:key="value" class="chip {{needValues.indexOf(item.value) >= 0 ? 'chip-selected' : ''}}"><checkbox value="{{item.value}}" checked="{{needValues.indexOf(item.value) >= 0}}" />{{item.label}}</label></checkbox-group>
     <label class="label">已有经历（选填）</label><textarea value="{{form.experience}}" data-field="experience" bindinput="inputField" maxlength="1000" placeholder="可简单写实习、项目或转行经历；也可以以后再补充。" />
     <label class="share-row"><switch checked="{{form.shareExperience}}" bindchange="toggleShare" color="#187552" /><view><view>我愿意在未来分享自己的经历</view><view class="muted">不会自动公开，任何连接均需双方确认。</view></view></label>
   </view>
