@@ -38,14 +38,17 @@ function textField(value, name, limit, required = true) {
 }
 
 function profileInput(value) {
-  fieldsOnly(value, PROFILE_FIELDS);
+  // 部分 CloudBase 运行时会把嵌套 data 的这个键转为小写；统一规范化后再校验。
+  fieldsOnly(value, PROFILE_FIELDS.concat(['currentneeds']));
+  if (value.currentNeeds !== undefined && value.currentneeds !== undefined) fail('INVALID_ARGUMENT', '希望获得的支持字段重复');
+  const currentNeeds = value.currentNeeds === undefined ? value.currentneeds : value.currentNeeds;
   if (!STAGES.includes(value.stage)) fail('INVALID_ARGUMENT', '请选择当前阶段');
   if (!Array.isArray(value.directions) || value.directions.length < 1 || value.directions.length > 5 ||
       new Set(value.directions).size !== value.directions.length || value.directions.some(item => !DIRECTIONS.includes(item))) {
     fail('INVALID_ARGUMENT', '请选择 1 至 5 个感兴趣方向');
   }
-  if (!Array.isArray(value.currentNeeds) || value.currentNeeds.length < 1 || value.currentNeeds.length > NEEDS.length ||
-      new Set(value.currentNeeds).size !== value.currentNeeds.length || value.currentNeeds.some(item => !NEEDS.includes(item))) {
+  if (!Array.isArray(currentNeeds) || currentNeeds.length < 1 || currentNeeds.length > NEEDS.length ||
+      new Set(currentNeeds).size !== currentNeeds.length || currentNeeds.some(item => !NEEDS.includes(item))) {
     fail('INVALID_ARGUMENT', '请选择 1 至 ' + NEEDS.length + ' 个希望解决的问题');
   }
   if (typeof value.shareExperience !== 'boolean') fail('INVALID_ARGUMENT', '分享意愿格式无效');
@@ -56,7 +59,7 @@ function profileInput(value) {
     specialty: textField(value.specialty, '专业或岗位方向', 80),
     city: textField(value.city, '所在城市', 40),
     directions: value.directions.slice(),
-    currentNeeds: value.currentNeeds.slice(),
+    currentNeeds: currentNeeds.slice(),
     experience: textField(value.experience, '经历介绍', 1000, false),
     shareExperience: value.shareExperience
   };

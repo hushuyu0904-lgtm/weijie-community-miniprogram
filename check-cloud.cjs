@@ -108,6 +108,8 @@ async function main() {
     denied(await call('updateProfile', { profile: Object.assign(profile(), { directions: ['medical-ai', 'medical-ai'] }), consents: consents() }), 'INVALID_ARGUMENT');
     denied(await call('updateProfile', { profile: Object.assign(profile(), { currentNeeds: [] }), consents: consents() }), 'INVALID_ARGUMENT');
     denied(await call('updateProfile', { profile: Object.assign(profile(), { currentNeeds: ['explore', 'explore'] }), consents: consents() }), 'INVALID_ARGUMENT');
+    const lowercaseNeeds = profile(); lowercaseNeeds.currentneeds = lowercaseNeeds.currentNeeds; delete lowercaseNeeds.currentNeeds;
+    assert.deepEqual(ok(await call('updateProfile', { profile: lowercaseNeeds, consents: consents() })).profile.currentNeeds, ['explore']);
     denied(await call('updateProfile', { profile: profile(), consents: { privacyAccepted: false, opportunityOptIn: true } }), 'INVALID_ARGUMENT');
     register('blocked', 'member', false); actAs('blocked');
     denied(await call('completeOnboarding', { profile: profile(), consents: consents() }), 'FORBIDDEN');
