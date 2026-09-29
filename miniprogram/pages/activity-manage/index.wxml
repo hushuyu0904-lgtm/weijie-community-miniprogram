@@ -5,7 +5,7 @@
   <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="loadActivities">重试</button></view>
   <block wx:else>
     <button class="primary" bindtap="openEditor">新建活动</button>
-    <view wx:if="{{!items.length}}" class="state">暂无活动</view>
+    <view wx:if="{{!items.length}}" class="state"><view class="status-empty-title">还没有活动草稿</view><view class="muted">先创建一场免费活动，发布后成员才会看到并报名。</view></view>
     <view wx:for="{{items}}" wx:key="id" class="card">
       <view class="subtitle">{{item.title}}</view>
       <view class="muted">{{item.status === 'draft' ? '草稿 · 成员不可见' : '已发布 · 已获准成员可见'}}</view>

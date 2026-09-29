@@ -4,7 +4,7 @@
   <view wx:if="{{status === 'loading'}}" class="state">加载中…</view>
   <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="load">重试</button></view>
   <block wx:else>
-    <view wx:if="{{!items.length}}" class="state">你还没有活动报名记录。</view>
+    <view wx:if="{{!items.length}}" class="state"><view class="status-empty-title">你还没有活动报名记录</view><view class="muted">从一场感兴趣的活动开始，认识和你一样在探索不同道路的人。</view><button class="secondary" bindtap="openActivities">去看看活动</button></view>
     <view wx:for="{{items}}" wx:key="id" class="card"><view class="subtitle">{{item.activityTitle}}</view><view class="field"><text class="label">时间</text>{{item.timeText}}</view><view class="field"><text class="label">地点</text>{{item.location}}</view><view class="tag {{item.status === 'confirmed' ? 'confirmed' : 'waitlist'}}">{{item.status === 'confirmed' ? '已报名' : '候补中'}}</view></view>
   </block>
 </view>

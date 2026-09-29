@@ -27,6 +27,7 @@
     <view class="muted">仅限本人报名一个名额。</view>
     <view wx:if="{{activity.priceFen > 0}}" class="notice">该活动包含收费信息，首发仅支持免费活动，目前不能报名或付款。</view>
   </view>
+  <view wx:if="{{error}}" class="notice form-error">{{error}}</view>
   <view class="registration-bar">
     <view wx:if="{{activity.myRegistration}}" class="closed">{{activity.myRegistration.status === 'confirmed' ? '你已报名成功' : '你已进入候补名单'}}</view>
     <button wx:elif="{{activity.canRegister}}" class="primary" loading="{{registering}}" disabled="{{registering}}" bindtap="register">免费报名</button>

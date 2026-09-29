@@ -11,5 +11,6 @@ Page({
       const items = await cloud.call('listMyRegistrations', { offset: 0 });
       if (this._active) this.setData({ status: 'ready', items: items.map(item => Object.assign({}, item, { timeText: timeText(item.activityStartAt) })) });
     } catch (error) { if (this._active) this.setData({ status: 'error', error: error.message || '报名记录加载失败' }); }
-  }
+  },
+  openActivities() { wx.switchTab({ url: '/pages/activities/index' }); }
 });
