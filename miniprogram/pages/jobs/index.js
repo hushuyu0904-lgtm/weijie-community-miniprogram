@@ -1,6 +1,6 @@
 const cloud = require('../../services/cloud');
 const media = require('../../services/resource-media');
-const categories = [{id:'all',label:'全部',icon:'book'},{id:'opportunity',label:'机会',icon:'book'},{id:'news',label:'资讯',icon:'lecture'},{id:'knowledge',label:'知识库',icon:'outing'},{id:'recap',label:'回顾',icon:'calendar'}];
+const categories = [{id:'all',label:'全部',icon:''},{id:'opportunity',label:'机会',icon:'book'},{id:'news',label:'资讯',icon:'lecture'},{id:'knowledge',label:'知识库',icon:'outing'},{id:'recap',label:'回顾',icon:'calendar'}];
 Page({
   data:{ category:'all', categories, status:'loading', items:[], error:'', loadingMore:false, hasMore:false, moreError:'' },
   onLoad(){ this._active=true; return this.loadResources(); },
