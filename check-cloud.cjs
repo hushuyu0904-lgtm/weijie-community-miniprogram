@@ -308,7 +308,7 @@ async function main() {
     await assert.rejects(module.exports.call('listActivities'), error => error.code === 'FORBIDDEN');
     const activitiesModule = { exports: {} };
     vm.runInNewContext(read('miniprogram/services/activities.js'), {
-      module: activitiesModule, require: name => name === '../config' ? config : name === './cloud' ? module.exports : { listActivities() { throw Error('must not call demo'); } }
+      module: activitiesModule, require: name => name === '../config' ? config : name === './cloud' ? module.exports : name === './resource-media' ? { getTempFileUrls: async () => ({}) } : { listActivities() { throw Error('must not call demo'); } }
     });
     await assert.rejects(activitiesModule.exports.listActivities(), error => error.code === 'FORBIDDEN');
   });
@@ -343,7 +343,7 @@ async function main() {
     actAs('member');
     const apiModule = { exports: {} };
     vm.runInNewContext(read('miniprogram/services/activities.js'), {
-      module: apiModule, require: name => name === '../config' ? { mode: 'cloud' } : name === './cloud' ? bridge : {}, Date
+      module: apiModule, require: name => name === '../config' ? { mode: 'cloud' } : name === './cloud' ? bridge : name === './resource-media' ? { getTempFileUrls: async () => ({}) } : {}, Date
     });
     const shown = await apiModule.exports.getActivity(editor._id);
     assert.equal(shown.title, values.title); assert.equal(shown.priceText, '免费'); assert.equal(shown.isDemo, false);

@@ -89,7 +89,7 @@ async function main() {
       const rows = [0, 4900].map((priceFen, i) => ({ id: 'a-example-' + i, priceFen, priceText: '¥49.00（示例）', startAt: 1, endAt: 2, deadlineAt: 1 }));
       vm.runInNewContext(read(path.join(mp, 'services/activities.js')), {
         module: apiModule,
-        require: name => name === '../config' ? { mode } : name === './cloud' ? { call: async () => rows } : { listActivities: async () => rows }
+        require: name => name === '../config' ? { mode } : name === './cloud' ? { call: async () => rows } : name === './resource-media' ? { getTempFileUrls: async () => ({}) } : { listActivities: async () => rows }
       });
       const result = await apiModule.exports.listActivities();
       assert.equal(result[0].priceText, '免费');

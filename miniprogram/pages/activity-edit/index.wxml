@@ -4,6 +4,8 @@
   <view wx:elif="{{status === 'error'}}" class="state"><view>{{error}}</view><button class="primary" bindtap="loadEditor">重试</button></view>
   <view wx:else class="card">
     <view class="notice">{{activityStatus === 'published' ? '已发布 · 本阶段只读' : '草稿 · 完整填写并保存后可发布'}}。所有时间使用北京时间。</view>
+    <view class="editor-row"><view><view class="label">活动封面（选填）</view><view class="form-hint">建议横图；单张不超过 5MB。</view></view><button wx:if="{{activityStatus === 'draft'}}" class="secondary compact-button" loading="{{uploading}}" disabled="{{busy || uploading}}" bindtap="chooseCover">{{form.coverFileId ? '更换封面' : '上传封面'}}</button></view>
+    <image wx:if="{{coverPreviewUrl}}" class="activity-cover-preview" src="{{coverPreviewUrl}}" mode="aspectFill"/><button wx:if="{{form.coverFileId && activityStatus === 'draft'}}" class="link-button" bindtap="clearCover">移除封面</button>
     <label for="title" class="label">活动标题（必填，最多 120 字）</label><input id="title" value="{{form.title}}" data-field="title" bindinput="inputField" maxlength="120" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="description" class="label">活动说明（必填，最多 5000 字）</label><textarea id="description" value="{{form.description}}" data-field="description" bindinput="inputField" maxlength="5000" disabled="{{busy || activityStatus === 'published'}}" />
     <label for="location" class="label">地点（必填）</label><input id="location" value="{{form.location}}" data-field="location" bindinput="inputField" maxlength="200" disabled="{{busy || activityStatus === 'published'}}" />

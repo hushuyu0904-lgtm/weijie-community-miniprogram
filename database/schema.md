@@ -29,6 +29,7 @@
 | `status` | `draft` / `published` | 草稿隔离与成员可见性 |
 | `version` | number | 乐观并发控制 |
 | `title`、`description`、`location`、`refundPolicy` | string | 活动说明 |
+| `coverFileId` | string | 可选 CloudBase 云存储活动封面文件 ID |
 | `category` | `coffee` / `outing` / `lecture` / `chat` / `other` | 列表分类 |
 | `priceFen` | number | v0.1 固定为 0 |
 | `capacity`、`registrationCount` | number | 容量与已确认人数 |

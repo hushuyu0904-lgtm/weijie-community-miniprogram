@@ -33,4 +33,9 @@ async function pickAndUploadAvatar() {
   return cloud.uploadAvatarImage(path);
 }
 
-module.exports = { pickAndUploadImage, pickAndUploadAvatar, getTempFileUrls: cloud.getTempFileUrls };
+async function pickAndUploadActivityCover() {
+  const path = await chooseOneImage();
+  return cloud.uploadActivityImage(path);
+}
+
+module.exports = { pickAndUploadImage, pickAndUploadAvatar, pickAndUploadActivityCover, getTempFileUrls: cloud.getTempFileUrls };

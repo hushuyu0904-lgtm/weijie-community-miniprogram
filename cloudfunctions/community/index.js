@@ -2,7 +2,7 @@ const cloud = require('wx-server-sdk');
 const crypto = require('node:crypto');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
-const FIELDS = ['title', 'description', 'location', 'category', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy'];
+const FIELDS = ['title', 'description', 'location', 'category', 'priceFen', 'capacity', 'startAt', 'endAt', 'deadlineAt', 'refundPolicy', 'coverFileId'];
 const ACTIVITY_CATEGORIES = ['coffee', 'outing', 'lecture', 'chat', 'other'];
 const RESOURCE_FIELDS = ['title', 'summary', 'category', 'content', 'sourceLabel', 'sourceUrl', 'coverFileId', 'blocks'];
 const RESOURCE_CATEGORIES = ['opportunity', 'news', 'knowledge', 'recap'];
@@ -95,6 +95,7 @@ function activityInput(value, publishing) {
   }
   if (!ACTIVITY_CATEGORIES.includes(value.category)) fail('INVALID_ARGUMENT', '请选择活动类型');
   result.category = value.category;
+  result.coverFileId = storageFileId(value.coverFileId, '活动封面');
   if (!Number.isSafeInteger(value.priceFen) || value.priceFen < 0) fail('INVALID_ARGUMENT', '金额必须为非负整数分');
   if (!Number.isSafeInteger(value.capacity) || value.capacity < 1) fail('INVALID_ARGUMENT', '容量必须为正整数');
   result.priceFen = value.priceFen;

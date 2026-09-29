@@ -1,6 +1,7 @@
 const config = require('../config');
 const cloud = require('./cloud');
 const demo = require('./demo-activities');
+const media = require('./resource-media');
 const isDemo = config.mode === 'demo';
 const sourceLabel = isDemo ? demo.sourceLabel : '云端模式 · 未使用演示数据';
 
@@ -23,13 +24,20 @@ async function listActivities(offset = 0, category) {
   const payload = { offset };
   if (category && category !== 'all') payload.category = category;
   const items = isDemo ? (await demo.listActivities()).filter(item => !category || category === 'all' || (item.id === 'demo-medical-ai' ? 'lecture' : 'coffee') === category).slice(offset, offset + 20) : await cloud.call('listActivities', payload);
-  return items.map(forDisplay);
+  const displayed = items.map(forDisplay);
+  if (isDemo) return displayed;
+  const urls = await media.getTempFileUrls(displayed.map(item => item.coverFileId));
+  return displayed.map(item => Object.assign({}, item, { coverUrl: urls[item.coverFileId] || '' }));
 }
 
 async function getActivity(id) {
   if (typeof id !== 'string' || !(isDemo ? /^[a-z0-9-]{1,64}$/ : /^a-[a-z0-9-]{8,60}$/).test(id)) return null;
   const item = isDemo ? await demo.getActivity(id) : await cloud.call('getActivity', { id });
-  return item ? forDisplay(item) : null;
+  if (!item) return null;
+  const displayed = forDisplay(item);
+  if (isDemo) return displayed;
+  const urls = await media.getTempFileUrls([displayed.coverFileId]);
+  return Object.assign({}, displayed, { coverUrl: urls[displayed.coverFileId] || '' });
 }
 
 async function registerActivity(id) {
