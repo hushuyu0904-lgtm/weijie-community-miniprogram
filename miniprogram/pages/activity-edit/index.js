@@ -1,5 +1,5 @@
 const cloud = require('../../services/cloud');
-const emptyForm = { title: '', description: '', location: '', category: 'coffee', priceYuan: '', capacity: '', startAt: '', endAt: '', deadlineAt: '', refundPolicy: '' };
+const emptyForm = { title: '', description: '', location: '', category: 'coffee', priceYuan: '0.00', capacity: '', startAt: '', endAt: '', deadlineAt: '', refundPolicy: '' };
 const categories = [{ id: 'coffee', label: '线下 Coffee Chat' }, { id: 'outing', label: '出去玩' }, { id: 'lecture', label: '线上讲座' }, { id: 'chat', label: '线上聊天室' }, { id: 'other', label: '其他活动' }];
 function timeText(value) { return new Date(value + 28800000).toISOString().slice(0, 16).replace('T', ' '); }
 function parseTime(value) {
